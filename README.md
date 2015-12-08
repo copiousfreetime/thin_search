@@ -1,7 +1,7 @@
-## FIXME
+## ThinSearch
 
-* [Homepage](https://github.com/copiousfreetime/FIXME/)
-* [Github Project](https://github.com/copiousfreetime/FIXME)
+* [Homepage](https://github.com/copiousfreetime/thin_search/)
+* [Github Project](https://github.com/copiousfreetime/thin_search)
 
 ## DESCRIPTION
 
