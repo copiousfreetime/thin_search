@@ -39,7 +39,7 @@ module ThinSearch
     def add_documents_to_index(index_name, documents)
       insertion_transaction(index_name) do |statement|
         documents.each do |document|
-          statement.execute(doc_to_insert_bindings(document))
+          statement.execute(document_to_insert_bindings(document))
         end
       end
     end
@@ -59,6 +59,7 @@ module ThinSearch
     end
 
     def doc_to_insert_bindings(doc)
+    def document_to_insert_bindings(doc)
       {
         ':context'    => doc.context,
         ':context_id' => doc.context_id,
