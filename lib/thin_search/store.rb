@@ -32,9 +32,15 @@ module ThinSearch
       db.schema.tables.has_key?(name)
     end
 
-    def add_document_to_index(index_name, doc)
-      insertion_transaction(index_name) do |stmt|
-        stmt.execute(doc_to_insert_bindings(doc))
+    def add_document_to_index(index_name, document)
+      add_documents_to_index(index_name, Array(document))
+    end
+
+    def add_documents_to_index(index_name, documents)
+      insertion_transaction(index_name) do |statement|
+        documents.each do |document|
+          statement.execute(doc_to_insert_bindings(document))
+        end
       end
     end
 

@@ -40,8 +40,15 @@ class TestStore < ::ThinSearch::Test
   end
 
   def test_bulk_insert_documents
+    docs = Array.new(10) { fake_document }
 
+    count = store.document_count_for(index_name)
+    assert(count == 0)
+
+    store.add_documents_to_index(index_name, docs)
+
+    count = store.document_count_for(index_name)
+    assert(count == docs.size, "Index Document count #{count} does not equal #{docs.size}")
   end
-
 
 end
