@@ -33,3 +33,10 @@ parsed once if it is involved in json1 functions? For example:
 In this case, is doc parsed via json twice? I'm not actually worried about
 performance or anything, just wondering.
 
+### Response from D. Richard Hipp
+* yes this is the proper method to distinguish between JSON null and SQL NULL
+
+> No. The JSON parsing turned out to be so fast that such optimizations 
+> didn't seem worth the effort. Of course, things might change in the 
+> future.
+
