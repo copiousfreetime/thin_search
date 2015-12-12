@@ -20,7 +20,7 @@ module ThinSearch
             important,
             normal,
             tokenize = 'porter unicode61'
-      );
+      )
       SQL
     end
 
@@ -92,7 +92,9 @@ module ThinSearch
     def insert_sql(index_name)
       @sql_cache["#{index_name}.insert"] ||= <<-SQL
       INSERT INTO #{index_name} (context, context_id, facets, important, normal )
-      VALUES (:context, :context_id, json(:facets), :important, :normal);
+      VALUES (:context, :context_id, json(:facets), :important, :normal)
+      SQL
+    end
 
     def select_sql(index_name)
       @sql_cache["#{index_name}.select"] || <<-SQL
