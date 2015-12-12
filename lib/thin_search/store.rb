@@ -48,6 +48,12 @@ module ThinSearch
       db.first_value_from("SELECT count(*) FROM #{index_name}")
     end
 
+    def search_index(index_name, query, &block)
+      db.execute( select_sql(index_name), query ) do |row|
+        yield document_from_row(row)
+      end
+    end
+
     private
 
     def insertion_transaction(index_name, &block)
@@ -58,7 +64,17 @@ module ThinSearch
       end
     end
 
-    def doc_to_insert_bindings(doc)
+    def document_from_row(row)
+      ::ThinSearch::Document.new do |doc|
+        doc.context    = row["context"]
+        doc.context_id = row["context_id"]
+        doc.facets     = JSON.parse(row["facets"])
+        doc.important  = row["important"]
+        doc.normal     = row["normal"]
+      end
+
+    end
+
     def document_to_insert_bindings(doc)
       {
         ':context'    => doc.context,
@@ -77,6 +93,12 @@ module ThinSearch
       @sql_cache["#{index_name}.insert"] ||= <<-SQL
       INSERT INTO #{index_name} (context, context_id, facets, important, normal )
       VALUES (:context, :context_id, json(:facets), :important, :normal);
+
+    def select_sql(index_name)
+      @sql_cache["#{index_name}.select"] || <<-SQL
+      SELECT *
+       FROM #{index_name}
+      WHERE #{index_name} MATCH ?
       SQL
     end
   end
