@@ -8,11 +8,11 @@ module ThinSearch
     attr_accessor :normal
 
     def initialize(data = {}, &block)
-      @context    = data[:context]
-      @context_id = data[:context_id]
-      @facets     = data[:facets]
-      @important  = data[:important]
-      @normal     = data[:normal]
+      @context    = data[:context]    || data['context']
+      @context_id = data[:context_id] || data['context_id']
+      @facets     = data[:facets]     || data['facets']
+      @important  = data[:important]  || data['important']
+      @normal     = data[:normal]     || data['normal']
       yield self if block_given?
     end
 
