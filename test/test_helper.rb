@@ -47,11 +47,14 @@ module ThinSearch
 
     def setup
       @db_path = TestPaths.test_db
-      @store   = ::ThinSearch::Store.new(@db_path)
     end
 
     def teardown
       File.unlink(@db_path) if File.exist?(@db_path)
+    end
+
+    def store
+      @store   ||= ::ThinSearch::Store.new(@db_path)
     end
   end
 end
