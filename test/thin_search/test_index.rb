@@ -31,5 +31,10 @@ class TestIndex < ::ThinSearch::Test
     assert(count == docs.count)
   end
 
+  def test_can_count_documents
+    docs = Array.new(10) { fake_document }
+    index.add(docs)
+    count = index.count
+    assert(count == docs.size)
   end
 end
