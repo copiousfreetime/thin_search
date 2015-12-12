@@ -51,6 +51,15 @@ class TestStore < ::ThinSearch::Test
     assert(count == docs.size, "Index Document count #{count} does not equal #{docs.size}")
   end
 
+  def test_raises_exception_on_invalid_document
+    doc = fake_document
+    doc.context_id = nil
+
+    error = assert_raises(::ThinSearch::Document::Error) { store.add_document_to_index(index_name, doc) }
+
+    assert(error.message == "context_id must be set", "Wrong message")
+  end
+
   def test_query_documents
     docs = Array.new(10) { fake_document }
     should_match = docs.select { |d| d.important.flatten.join(' ') =~ /gmail/ }
