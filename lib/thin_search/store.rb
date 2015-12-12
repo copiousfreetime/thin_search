@@ -99,8 +99,8 @@ module ThinSearch
     def select_sql(index_name)
       @sql_cache["#{index_name}.select"] || <<-SQL
       SELECT *
-       FROM #{index_name}
-      WHERE #{index_name} MATCH ?
+        FROM #{index_name}
+       WHERE #{index_name} MATCH ?
       SQL
     end
   end
