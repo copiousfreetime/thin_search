@@ -5,7 +5,9 @@
 
 ## DESCRIPTION
 
- FIXME
+Thin Search aims to be the easiest way to add full text search to your
+Ruby application. Any object may be indexed and become searchable.
+
 
 ## FEATURES
 
