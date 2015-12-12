@@ -14,5 +14,10 @@ module ThinSearch
 
       @store.create_index(@name) unless @store.has_index?(@name)
     end
+    def add(indexable)
+      Array(indexable).tap do |list|
+        store.add_documents_to_index(name, list)
+      end
+    end
   end
 end
