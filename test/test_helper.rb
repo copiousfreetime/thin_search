@@ -38,3 +38,20 @@ class TestPaths
     test_path("test.db")
   end
 end
+
+module ThinSearch
+  class Test < ::Minitest::Test
+
+    attr_reader :db_path
+    attr_reader :store
+
+    def setup
+      @db_path = TestPaths.test_db
+      @store   = ::ThinSearch::Store.new(@db_path)
+    end
+
+    def teardown
+      File.unlink(@db_path) if File.exist?(@db_path)
+    end
+  end
+end
