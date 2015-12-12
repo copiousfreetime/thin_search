@@ -7,9 +7,13 @@ module ThinSearch
     attr_accessor :important
     attr_accessor :normal
 
-    def initialize(data = {})
+    def initialize(data = {}, &block)
       @context    = data[:context]
       @context_id = data[:context_id]
+      @facets     = data[:facets]
+      @important  = data[:important]
+      @normal     = data[:normal]
+      yield self if block_given?
     end
 
     def validate
@@ -23,5 +27,6 @@ module ThinSearch
     rescue ArgumentError
       false
     end
+
   end
 end
