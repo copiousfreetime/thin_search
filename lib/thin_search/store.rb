@@ -39,7 +39,7 @@ module ThinSearch
     def add_documents_to_index(index_name, documents)
       insertion_transaction(index_name) do |statement|
         documents.each do |document|
-          statement.execute(document_to_insert_bindings(document))
+          statement.execute(document_to_insert_bindings(document.to_indexable_document))
         end
       end
     end

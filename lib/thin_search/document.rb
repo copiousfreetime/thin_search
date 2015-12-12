@@ -22,6 +22,10 @@ module ThinSearch
       true
     end
 
+    def to_indexable_document
+      self
+    end
+
     def valid?
       validate
     rescue ArgumentError
