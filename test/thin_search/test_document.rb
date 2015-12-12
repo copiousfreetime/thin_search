@@ -5,13 +5,13 @@ require 'securerandom'
 class TestDocument < ::ThinSearch::Test
   def test_raises_error_for_invalid_context
     doc = ::ThinSearch::Document.new
-    error = assert_raises(ArgumentError) { doc.validate }
+    error = assert_raises(::ThinSearch::Document::Error) { doc.validate }
     assert(error.message == "context must be set", "Wrong message")
   end
 
   def test_raises_error_for_invalid_context_id
     doc = ::ThinSearch::Document.new( :context => self.class.name )
-    error = assert_raises(ArgumentError) { doc.validate }
+    error = assert_raises(::ThinSearch::Document::Error) { doc.validate }
     assert(error.message == "context_id must be set", "Wrong message")
   end
 

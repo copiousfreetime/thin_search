@@ -1,6 +1,7 @@
 module ThinSearch
   # Document is the object that is stored and returned from all indexes
   class Document
+    class Error < ::ThinSearch::Error ; end
     attr_accessor :context
     attr_accessor :context_id
     attr_accessor :facets
@@ -17,8 +18,8 @@ module ThinSearch
     end
 
     def validate
-      raise ArgumentError, "context must be set"    if context.nil?
-      raise ArgumentError, "context_id must be set" if context_id.nil?
+      raise Error, "context must be set"    if context.nil?
+      raise Error, "context_id must be set" if context_id.nil?
       true
     end
 
