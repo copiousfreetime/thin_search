@@ -15,8 +15,8 @@ module ThinSearch
             context    ,
             context_id ,
             facets,
-            keywords,
-            fulltext,
+            important,
+            normal,
             tokenize = 'porter unicode61'
       );
       SQL

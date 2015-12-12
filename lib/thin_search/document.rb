@@ -4,8 +4,8 @@ module ThinSearch
     attr_accessor :context
     attr_accessor :context_id
     attr_accessor :facets
-    attr_accessor :keywords
-    attr_accessor :fulltext
+    attr_accessor :important
+    attr_accessor :normal
 
     def initialize(data = {})
       @context    = data[:context]
