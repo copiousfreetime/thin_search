@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Jeremy Hinegardner", "Ara T. Howard"]
-  s.date = "2015-12-08"
-  s.description = "FIXME"
+  s.date = "2015-12-12"
+  s.description = "Thin Search aims to be the easiest way to add full text search to your Ruby application. Any object may be indexed and become searchable."
   s.email = ["jeremy@copiousfreetime.org", "ara.t.howard@gmail.com"]
   s.extra_rdoc_files = ["CONTRIBUTING.md", "HISTORY.md", "Manifest.txt", "README.md"]
   s.files = ["CONTRIBUTING.md", "HISTORY.md", "LICENSE", "Manifest.txt", "README.md", "Rakefile", "lib/thin_search.rb", "tasks/default.rake", "tasks/this.rb", "test/test_helper.rb", "test/test_version.rb"]
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.md", "--markup", "tomdoc"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.3")
   s.rubygems_version = "2.4.8"
-  s.summary = "FIXME"
+  s.summary = "Thin Search aims to be the easiest way to add full text search to your Ruby application. Any object may be indexed and become searchable."
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
@@ -31,12 +31,14 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<minitest>, ["~> 5.7"])
       s.add_development_dependency(%q<rdoc>, ["~> 4.1"])
       s.add_development_dependency(%q<simplecov>, ["~> 0.10"])
+      s.add_development_dependency(%q<faker>, ["~> 1.5"])
     else
       s.add_dependency(%q<amalgalite>, ["~> 1.5"])
       s.add_dependency(%q<rake>, ["~> 10.3"])
       s.add_dependency(%q<minitest>, ["~> 5.7"])
       s.add_dependency(%q<rdoc>, ["~> 4.1"])
       s.add_dependency(%q<simplecov>, ["~> 0.10"])
+      s.add_dependency(%q<faker>, ["~> 1.5"])
     end
   else
     s.add_dependency(%q<amalgalite>, ["~> 1.5"])
@@ -44,5 +46,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<minitest>, ["~> 5.7"])
     s.add_dependency(%q<rdoc>, ["~> 4.1"])
     s.add_dependency(%q<simplecov>, ["~> 0.10"])
+    s.add_dependency(%q<faker>, ["~> 1.5"])
   end
 end

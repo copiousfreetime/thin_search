@@ -4,6 +4,8 @@ SimpleCov.start if ENV['COVERAGE']
 gem 'minitest'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'securerandom'
+require 'faker'
 
 class TestPaths
   def self.root_dir
@@ -55,6 +57,18 @@ module ThinSearch
 
     def store
       @store   ||= ::ThinSearch::Store.new(@db_path)
+    end
+
+    def fake_document
+      ::ThinSearch::Document.new do |doc|
+        doc.context    = "::ThinSearch::Document"
+        doc.context_id = SecureRandom.uuid
+        doc.facets     = { :date       => ::Faker::Date.backward(365),
+                           :color      => Faker::Commerce.color,
+                           :department => ::Faker::Commerce.department }
+        doc.important = [ Faker::Internet.free_email, Faker::Name.name ]
+        doc.normal    = [ Faker::Hipster.paragraph ]
+      end
     end
   end
 end

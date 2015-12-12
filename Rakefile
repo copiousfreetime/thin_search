@@ -13,6 +13,7 @@ This.ruby_gemspec do |spec|
   spec.add_development_dependency( 'minitest' , '~> 5.7' )
   spec.add_development_dependency( 'rdoc'     , '~> 4.1' )
   spec.add_development_dependency( 'simplecov', '~> 0.10')
+  spec.add_development_dependency( 'faker'    , '~> 1.5')
 end
 
 load 'tasks/default.rake'
