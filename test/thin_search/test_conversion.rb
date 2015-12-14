@@ -182,7 +182,7 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/normal/, error.message)
   end
 
-  def test_converts_to_document
+  def test_converts_indexable_to_document
     conversion = ThinSearch::Conversion.new(options)
     model      = TestModel.collection.values.last
     document   = conversion.to_indexable_document(model)
@@ -193,6 +193,16 @@ class TestConversion < ::ThinSearch::Test
     assert_equal(model.thinsearch_facets, document.facets)
     assert_equal(model.thinsearch_important, document.important)
     assert_equal(model.thinsearch_normal, document.normal)
+  end
+
+  def test_converts_document_to_indexable
+    conversion = ThinSearch::Conversion.new(options)
+    TestModel.collection.each do |id, obj|
+      dup  = obj.dup
+      doc  = conversion.to_indexable_document(dup)
+      obj2 = conversion.from_indexable_document(doc)
+      assert_equal(obj, obj2)
+    end
   end
 end
 
