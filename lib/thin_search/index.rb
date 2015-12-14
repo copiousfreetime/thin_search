@@ -63,12 +63,19 @@ module ThinSearch
 
     # Public: Search for and yield the resulting items
     #
-    # yields each orginal class instance
+    # yields each object if a block is given
     #
-    # Returns nothing
+    # Returns an Array of result instances if no block is given
     def search(query, &block)
-      store.search_index(name, query) do |document|
-        yield Conversion.from_indexable_document(document)
+      if block_given? then
+        store.search_index(name, query).each do |document|
+          yield Conversion.from_indexable_document(document)
+        end
+        nil
+      else
+        store.search_index(name, query).map do |document|
+          Conversion.from_indexable_document(document)
+        end
       end
     end
 
