@@ -80,10 +80,10 @@ module ThinSearch
     #
     # Returns the Conversion instance for the klass
     # Raises Conversion::Error if the klass cannot be found
-    def self.for(klass)
-      registry.fetch(klass.to_s)
+    def self.for(klass_or_string)
+      registry.fetch(klass_or_string.to_s)
     rescue KeyError
-      raise Error, "Unable to find conversion for #{klass} in registry"
+      raise Error, "Unable to find conversion for #{klass_or_string} in registry"
     end
 
     # Internal: convert the given indexable item to a Document.
