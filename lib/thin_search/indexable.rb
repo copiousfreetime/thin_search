@@ -16,9 +16,5 @@ module ThinSearch
       return unless klass.instance_of?( Class )
       klass.extend(ClassMethods)
     end
-
-    def to_indexable_document
-      ThinSearch::Conversion.for(self.class).to_indexable_document(self)
-    end
   end
 end
