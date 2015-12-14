@@ -48,10 +48,6 @@ module ThinSearch
 
       private
 
-      def indexable_string( thing )
-        [ thing ].flatten.compact.join(' ')
-      end
-
       def document_to_sql_bindings(document)
         {
           ":context"    => document.context,

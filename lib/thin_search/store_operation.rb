@@ -21,6 +21,11 @@ module ThinSearch
         doc.rowid      = row["rowid"]
       end
     end
+
+    def indexable_string( thing )
+      [ thing ].flatten.compact.join(' ')
+    end
+
   end
 end
 
