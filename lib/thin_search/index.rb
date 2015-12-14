@@ -24,5 +24,12 @@ module ThinSearch
         store.add_documents_to_index(name, list)
       end
     end
+
+    def remove(indexable)
+      Array(indexable).tap do |list|
+        store.remove_documents_from_index(name, list)
+      end
+    end
+
   end
 end

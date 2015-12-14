@@ -36,5 +36,14 @@ class TestIndex < ::ThinSearch::Test
     index.add(docs)
     count = index.count
     assert(count == docs.size)
+  def test_can_remove_a_document
+    docs = Array.new(10) { fake_document }
+    index.add(docs)
+    count = index.count
+    assert(docs.size, count)
+
+    index.remove(docs.first)
+    count = index.count
+    assert(docs.size - 1, count)
   end
 end
