@@ -139,4 +139,22 @@ class TestStore < ::ThinSearch::Test
     doc2 = store.find_one_document_in_index(index_name, find_me)
     assert_equal("testupdatedocument", doc2.important)
   end
+
+  def test_search_returns_ranked_documents
+    normal_doc    = fake_document
+    normal_doc.important = "normal"
+    normal_doc.normal  = %w[ important important imporant ]
+    store.add_document_to_index(index_name, normal_doc)
+
+    important_doc = fake_document
+    important_doc.important = "important"
+    store.add_document_to_index(index_name, important_doc)
+
+    enumerator = store.search_index(index_name, "important")
+    first = enumerator.next
+    assert_equal(important_doc.context_id, first.context_id)
+
+    second = enumerator.next
+    assert_equal(normal_doc.context_id, second.context_id)
+  end
 end

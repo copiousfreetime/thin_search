@@ -27,6 +27,8 @@ module ThinSearch
               content_rowid = 'rowid'
         );
 
+        INSERT INTO #{search_table}(#{search_table}, rank) VALUES('rank', 'bm25(1.0,1.0,1.0,10.0,2.0)');
+
         CREATE TRIGGER #{content_table}_after_insert_tgr AFTER INSERT ON #{content_table}
         BEGIN
           INSERT INTO #{search_table}(rowid, context, context_id, facets, important, normal)
@@ -127,7 +129,12 @@ module ThinSearch
 
     class Search < StoreOperation
       def sql
-        @sql ||= "SELECT * FROM #{search_table} WHERE #{search_table} MATCH ?"
+        @sql ||= <<-SQL
+          SELECT *
+            FROM #{search_table}
+           WHERE #{search_table} MATCH ?
+        ORDER BY rank
+        SQL
       end
 
       def call(db, query)
