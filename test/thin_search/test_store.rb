@@ -82,5 +82,19 @@ class TestStore < ::ThinSearch::Test
     assert_equal(find_me.context_id, doc.context_id)
     refute_nil(doc.rowid)
   end
+
+  def test_remove_document
+    docs = Array.new(10) { fake_document }
+
+    count = store.document_count_for(index_name)
+    assert(0, count)
+
+    store.add_documents_to_index(index_name, docs)
+    count = store.document_count_for(index_name)
+    assert_equal(docs.size, count)
+
+    store.remove_document_from_index(index_name, docs.first)
+    count = store.document_count_for(index_name)
+    assert_equal(docs.size - 1, count)
   end
 end

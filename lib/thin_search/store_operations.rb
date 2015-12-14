@@ -124,10 +124,29 @@ module ThinSearch
 
       def document_to_sql_bindings(document)
         {
-          ":match"      => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
+          ":match" => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
         }
       end
     end
 
+
+    class Remove < StoreOperation
+      def sql
+        @sql ||= <<-SQL
+          DELETE FROM #{index_name}
+           WHERE #{index_name} MATCH :match
+        SQL
+      end
+
+      def call(db, document)
+        db.execute(sql, document_to_sql_bindings(document))
+      end
+
+      def document_to_sql_bindings(document)
+        {
+          ":match" => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\""
+        }
+      end
+    end
   end
 end
