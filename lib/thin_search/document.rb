@@ -1,3 +1,4 @@
+require 'thin_search/error'
 module ThinSearch
   # Document is the object that is stored and returned from all indexes
   class Document

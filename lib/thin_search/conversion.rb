@@ -1,3 +1,4 @@
+require 'thin_search/error'
 require 'thin_search/document'
 
 module ThinSearch
