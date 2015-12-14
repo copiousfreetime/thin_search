@@ -21,29 +21,31 @@ class TestIndex < ::ThinSearch::Test
     index.add(fake_document)
     count = store.document_count_for(index_name)
 
-    assert(count == 1)
+    assert_equal(1, count)
   end
 
   def test_can_index_multiple_documents
     docs = Array.new(10) { fake_document }
     index.add(docs)
     count = store.document_count_for(index_name)
-    assert(count == docs.count)
+    assert_equal(docs.count, count)
   end
 
   def test_can_count_documents
     docs = Array.new(10) { fake_document }
     index.add(docs)
     count = index.count
-    assert(count == docs.size)
+    assert_equal(docs.size, count)
+  end
+
   def test_can_remove_a_document
     docs = Array.new(10) { fake_document }
     index.add(docs)
     count = index.count
-    assert(docs.size, count)
+    assert_equal(docs.size, count)
 
     index.remove(docs.first)
     count = index.count
-    assert(docs.size - 1, count)
+    assert_equal(docs.size - 1, count)
   end
 end
