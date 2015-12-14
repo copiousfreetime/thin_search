@@ -23,7 +23,7 @@ class TestStore < ::ThinSearch::Test
 
   def test_inserts_document
     store.add_document_to_index(index_name, fake_document)
-    assert(store.db.row_changes == 1)
+    assert_equal(1, store.db.row_changes)
   end
 
   def test_counts_documents
@@ -36,19 +36,19 @@ class TestStore < ::ThinSearch::Test
     end
 
     count = store.document_count_for(index_name)
-    assert(count == docs.size)
+    assert_equal(docs.size, count)
   end
 
   def test_bulk_insert_documents
     docs = Array.new(10) { fake_document }
 
     count = store.document_count_for(index_name)
-    assert(count == 0)
+    assert_equal(0, count)
 
     store.add_documents_to_index(index_name, docs)
 
     count = store.document_count_for(index_name)
-    assert(count == docs.size, "Index Document count #{count} does not equal #{docs.size}")
+    assert_equal(docs.size, count, "Index Document count #{count} does not equal #{docs.size}")
   end
 
   def test_raises_exception_on_invalid_document
@@ -57,7 +57,7 @@ class TestStore < ::ThinSearch::Test
 
     error = assert_raises(::ThinSearch::Document::Error) { store.add_document_to_index(index_name, doc) }
 
-    assert(error.message == "context_id must be set", "Wrong message")
+    assert_match(/context_id must be set/, error.message)
   end
 
   def test_query_documents
@@ -69,6 +69,7 @@ class TestStore < ::ThinSearch::Test
     store.search_index(index_name, "gmail") do |doc|
       results << doc
     end
-    assert(results.size == should_match.size)
+    assert_equal(should_match.size, results.size)
+  end
   end
 end
