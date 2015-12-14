@@ -48,7 +48,7 @@ module ThinSearch
     end
 
     def remove_document_from_index(index_name, document)
-      operations_for_index(index_name)[StoreOperations::Remove].call(db, document)
+      operations_for_index(index_name)[StoreOperations::Delete].call(db, document)
     end
 
     private
@@ -62,7 +62,7 @@ module ThinSearch
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),
         StoreOperations::Search        => StoreOperations::Search.new(index_name),
         StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
-        StoreOperations::Remove        => StoreOperations::Remove.new(index_name),
+        StoreOperations::Delete        => StoreOperations::Delete.new(index_name),
       }
     end
   end

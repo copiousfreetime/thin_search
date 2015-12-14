@@ -130,7 +130,7 @@ module ThinSearch
     end
 
 
-    class Remove < StoreOperation
+    class Delete < StoreOperation
       def sql
         @sql ||= <<-SQL
           DELETE FROM #{index_name}
