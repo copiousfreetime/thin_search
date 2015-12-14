@@ -21,7 +21,7 @@ module ThinSearch
     end
 
     def has_index?(name)
-      db.schema.tables.has_key?(name)
+      db.schema.tables.has_key?("#{name}_content")
     end
 
     def add_document_to_index(index_name, document)

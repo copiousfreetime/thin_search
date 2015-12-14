@@ -6,9 +6,13 @@ module ThinSearch
   # This class is only used by Store and StoreOperations
   class StoreOperation
     attr_reader :index_name
+    attr_reader :content_table
+    attr_reader :search_table
 
     def initialize(index_name)
-      @index_name = index_name
+      @index_name    = index_name
+      @search_table  = "#{index_name}_fts"
+      @content_table = "#{index_name}_content"
     end
 
     def document_from_row(row)

@@ -4,30 +4,67 @@ module ThinSearch
     class CreateIndex < StoreOperation
       def sql
         <<-SQL
-        CREATE VIRTUAL TABLE #{index_name} USING fts5(
+        CREATE TABLE #{content_table}(
+          rowid      INTEGER PRIMARY KEY AUTOINCREMENT,
+          context    TEXT,
+          context_id TEXT,
+          facets     TEXT,
+          important  TEXT,
+          normal     TEXT
+        );
+
+        CREATE UNIQUE INDEX #{content_table}_idx
+            ON #{index_name}_content(context, context_id);
+
+        CREATE VIRTUAL TABLE #{search_table} USING fts5(
               context    ,
               context_id ,
               facets,
               important,
               normal,
-              tokenize = 'porter unicode61'
-        )
+              tokenize = 'porter unicode61',
+              content = '#{index_name}_content',
+              content_rowid = 'rowid'
+        );
+
+        CREATE TRIGGER #{content_table}_after_insert_tgr AFTER INSERT ON #{content_table}
+        BEGIN
+          INSERT INTO #{search_table}(rowid, context, context_id, facets, important, normal)
+               VALUES (new.rowid, new.context, new.context_id, new.facets, new.important, new.normal);
+        END;
+
+        CREATE TRIGGER #{content_table}_after_delete_tgr AFTER DELETE ON #{content_table}
+        BEGIN
+          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, important, normal)
+               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.important, old.normal);
+        END;
+
+        CREATE TRIGGER #{content_table}_after_update_tgr AFTER UPDATE ON #{content_table}
+        BEGIN
+          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, important, normal)
+               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.important, old.normal);
+          INSERT INTO #{search_table}(rowid, context, context_id, facets, important, normal)
+               VALUES (new.rowid, new.context, new.context_id, new.facets, new.important, new.normal);
+        END;
         SQL
       end
 
       def call(db)
-        db.execute(sql)
+        db.execute_batch(sql)
       end
     end
 
 
     class DropIndex < StoreOperation
       def sql
-        "DROP TABLE #{index_name}"
+        <<-SQL
+        DROP TABLE #{search_table};
+        DROP TABLE #{content_table};
+        SQL
       end
 
       def call(db)
-        db.execute(sql)
+        db.execute_batch(sql)
       end
     end
 
@@ -35,7 +72,7 @@ module ThinSearch
     class Insert < StoreOperation
       def sql
         @sql ||= <<-SQL
-        INSERT INTO #{index_name} (context, context_id, facets, important, normal )
+        INSERT INTO #{content_table} (context, context_id, facets, important, normal )
         VALUES (:context, :context_id, json(:facets), :important, :normal)
         SQL
       end
@@ -79,7 +116,7 @@ module ThinSearch
 
     class DocumentCount < StoreOperation
       def sql
-        @sql ||= "SELECT count(*) FROM #{index_name}"
+        @sql ||= "SELECT count(*) FROM #{content_table}"
       end
 
       def call(db)
@@ -90,7 +127,7 @@ module ThinSearch
 
     class Search < StoreOperation
       def sql
-        @sql ||= "SELECT * FROM #{index_name} WHERE #{index_name} MATCH ?"
+        @sql ||= "SELECT * FROM #{search_table} WHERE #{search_table} MATCH ?"
       end
 
       def call(db, query, &block)
@@ -104,10 +141,11 @@ module ThinSearch
     class FindOne < StoreOperation
       def sql
         @sql ||= <<-SQL
-         SELECT rowid, *
-           FROM #{index_name}
-          WHERE #{index_name} MATCH :match
-            SQL
+         SELECT *
+           FROM #{content_table}
+          WHERE context = :context
+            AND context_id = :context_id
+        SQL
       end
 
       def call(db, document)
@@ -120,7 +158,8 @@ module ThinSearch
 
       def document_to_sql_bindings(document)
         {
-          ":match" => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
+          ":context" => document.context,
+          ":context_id" => document.context_id
         }
       end
     end
@@ -129,8 +168,9 @@ module ThinSearch
     class Delete < StoreOperation
       def sql
         @sql ||= <<-SQL
-          DELETE FROM #{index_name}
-           WHERE #{index_name} MATCH :match
+          DELETE FROM #{content_table}
+           WHERE context = :context
+             AND context_id = :context_id
         SQL
       end
 
@@ -140,7 +180,8 @@ module ThinSearch
 
       def document_to_sql_bindings(document)
         {
-          ":match" => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\""
+          ":context" => document.context,
+          ":context_id" => document.context_id
         }
       end
     end
@@ -166,13 +207,12 @@ module ThinSearch
     class Update < StoreOperation
       def sql
         @sql ||= <<-SQL
-          UPDATE #{index_name}
-             SET context      = :context
-                ,context_id   = :context_id
-                ,facets       = json(:facets)
+          UPDATE #{content_table}
+             SET facets       = json(:facets)
                 ,important    = :important
                 ,normal       = :normal
-           WHERE #{index_name} MATCH :match
+           WHERE context = :context
+             AND context_id = :context_id
         SQL
       end
 
@@ -182,7 +222,6 @@ module ThinSearch
 
       def document_to_sql_bindings(document)
         {
-          ":match"      => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
           ":context"    => document.context,
           ":context_id" => document.context_id,
           ":facets"     => document.facets.to_json,
