@@ -31,5 +31,14 @@ module ThinSearch
       end
     end
 
+    # Public: Find a particular document in the index
+    #
+    # Using the context and context_id, find the given document in the index and
+    # return it.
+    #
+    # Returns a Document or nil if not found
+    def find(indexable)
+      store.find_one_document_in_index(name, indexable)
+    end
   end
 end

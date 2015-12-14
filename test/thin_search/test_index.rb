@@ -58,4 +58,11 @@ class TestIndex < ::ThinSearch::Test
     assert_equal(docs.count, count)
   end
 
+  def test_can_find_a_single_document
+    find_me = docs.last
+    doc = index.find(find_me)
+
+    assert_equal(find_me.context, doc.context)
+    assert_equal(find_me.context_id, doc.context_id)
+  end
 end
