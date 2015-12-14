@@ -40,3 +40,20 @@ performance or anything, just wondering.
 > didn't seem worth the effort. Of course, things might change in the 
 > future.
 
+# FTS document id
+
+I'm working with FTS5 and I'd like to guarantee that a particular document is
+indexed only once. I have what I consider to be a document id, but it is not an
+integer value its a hexadecimal string, think GUID/md5/sha1. Since the fts5
+rowid column is an integer, it appears I'll need to create a mapping from my
+document id to an fts5 rowid.
+
+I'm thinking the best method for me to resolve this would to just use an
+external content table with triggers to update FTS5 table. Pretty much exactly
+like https://sqlite.org/fts5.html#section_4_4_2 and use triggers to keep the
+FTS5 table in sync with the external content table.
+
+If I'm going to have to use an external table to create a rowid for the
+fts5 table, I might as well use use the external content table.
+
+
