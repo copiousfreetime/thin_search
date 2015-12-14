@@ -36,11 +36,12 @@ module ThinSearch
       operations_for_index(index_name)[StoreOperations::DocumentCount].call(db)
     end
 
-    def search_index(index_name, query, &block)
+    # Internal: return an Enumerator of documents that match
+    #
+    # Returns Enumerator
+    def search_index(index_name, query)
       search_op = operations_for_index(index_name)[StoreOperations::Search]
-      search_op.call(db, query) do |document|
-        yield document
-      end
+      search_op.call(db, query)
     end
 
     def find_one_document_in_index(index_name, document)

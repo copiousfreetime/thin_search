@@ -130,9 +130,11 @@ module ThinSearch
         @sql ||= "SELECT * FROM #{search_table} WHERE #{search_table} MATCH ?"
       end
 
-      def call(db, query, &block)
-        db.execute(sql, query) do |row|
-          yield document_from_row(row)
+      def call(db, query)
+        Enumerator.new do |yielder|
+          db.execute(sql, query) do |row|
+            yielder << document_from_row(row)
+          end
         end
       end
     end
