@@ -27,7 +27,7 @@ module ThinSearch
               content_rowid = 'rowid'
         );
 
-        INSERT INTO #{search_table}(#{search_table}, rank) VALUES('rank', 'bm25(1.0,1.0,1.0,10.0,2.0)');
+        INSERT INTO #{search_table}(#{search_table}, rank) VALUES('rank', 'bm25(1.0,1.0,1.0,100.0,2.0)');
 
         CREATE TRIGGER #{content_table}_after_insert_tgr AFTER INSERT ON #{content_table}
         BEGIN
