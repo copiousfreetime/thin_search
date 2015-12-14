@@ -54,11 +54,11 @@ module ThinSearch
 
       def document_to_sql_bindings(document)
         {
-          ':context'    => document.context,
-          ':context_id' => document.context_id,
-          ':facets'     => document.facets.to_json,
-          ':important'  => indexable_string(document.important),
-          ':normal'     => indexable_string(document.normal)
+          ":context"    => document.context,
+          ":context_id" => document.context_id,
+          ":facets"     => document.facets.to_json,
+          ":important"  => indexable_string(document.important),
+          ":normal"     => indexable_string(document.normal)
         }
       end
     end
