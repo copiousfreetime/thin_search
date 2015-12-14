@@ -40,9 +40,11 @@ module ThinSearch
     # Internal: return the Conversion for the given class
     #
     # Returns the Conversion instance for the klass
-    # Raises KeyError if the klass cannot be found
+    # Raises Conversion::Error if the klass cannot be found
     def self.for(klass)
       registry.fetch(klass.to_s)
+    rescue KeyError
+      raise Error, "Unable to find conversion for #{klass} in registry"
     end
 
     attr_reader :context

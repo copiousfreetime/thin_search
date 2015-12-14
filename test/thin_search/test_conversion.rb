@@ -240,6 +240,13 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/register/, error.message)
   end
 
+  def test_raises_error_if_model_cannot_be_found
+    error = assert_raises(::ThinSearch::Conversion::Error) {
+      ::ThinSearch::Conversion.for(::TestModel)
+    }
+
+    assert_match(/Unable to find conversion/, error.message)
+  end
 
 end
 
