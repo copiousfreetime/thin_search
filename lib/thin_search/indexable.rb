@@ -12,7 +12,7 @@ module ThinSearch
       end
     end
 
-    def inherited( klass )
+    def self.included( klass )
       return unless klass.instance_of?( Class )
       klass.extend(ClassMethods)
     end
