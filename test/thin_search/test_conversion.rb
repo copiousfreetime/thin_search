@@ -204,5 +204,18 @@ class TestConversion < ::ThinSearch::Test
       assert_equal(obj, obj2)
     end
   end
+
+  def test_raises_error_if_conversion_is_wrong_for_document
+    conversion = ThinSearch::Conversion.new(options)
+    model      = TestModel.collection.values.first
+    document   = conversion.to_indexable_document(model)
+    document.context = "::ThinSearch::Error"
+
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      conversion.from_indexable_document(document)
+    }
+    assert_match(/Unable to convert/, error.message)
+
+  end
 end
 
