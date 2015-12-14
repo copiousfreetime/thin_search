@@ -64,10 +64,10 @@ module ThinSearch
         doc.context    = "::ThinSearch::Document"
         doc.context_id = SecureRandom.uuid
         doc.facets     = { :date       => ::Faker::Date.backward(365),
-                           :color      => Faker::Commerce.color,
+                           :color      => ::Faker::Commerce.color,
                            :department => ::Faker::Commerce.department }
-        doc.important = [ Faker::Internet.free_email, Faker::Name.name ]
-        doc.normal    = [ Faker::Hipster.paragraph ]
+        doc.important = [ ::Faker::Internet.free_email, ::Faker::Name.name ]
+        doc.normal    = [ ::Faker::Hipster.paragraph ]
       end
     end
   end
