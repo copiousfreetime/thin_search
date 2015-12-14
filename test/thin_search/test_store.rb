@@ -71,5 +71,16 @@ class TestStore < ::ThinSearch::Test
     end
     assert_equal(should_match.size, results.size)
   end
+
+  def test_find_one_document
+    docs = Array.new(3) { fake_document }
+    store.add_documents_to_index(index_name, docs)
+    find_me = docs.last.dup
+    doc = store.find_one_document_in_index(index_name,find_me)
+    assert_nil(find_me.rowid)
+    assert_equal(find_me.context, doc.context)
+    assert_equal(find_me.context_id, doc.context_id)
+    refute_nil(doc.rowid)
+  end
   end
 end

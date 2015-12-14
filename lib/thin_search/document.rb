@@ -8,6 +8,7 @@ module ThinSearch
     attr_accessor :facets
     attr_accessor :important
     attr_accessor :normal
+    attr_accessor :rowid
 
     def initialize(data = {}, &block)
       @context    = data[:context]    || data['context']
@@ -15,6 +16,7 @@ module ThinSearch
       @facets     = data[:facets]     || data['facets']
       @important  = data[:important]  || data['important']
       @normal     = data[:normal]     || data['normal']
+      @rowid      = data[:rowid]      || data['rowid']
       yield self if block_given?
     end
 

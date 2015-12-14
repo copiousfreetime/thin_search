@@ -43,6 +43,10 @@ module ThinSearch
       end
     end
 
+    def find_one_document_in_index(index_name, document)
+      operations_for_index(index_name)[StoreOperations::FindOne].call(db, document)
+    end
+
     private
 
     def operations_for_index(index_name)
@@ -53,6 +57,7 @@ module ThinSearch
         StoreOperations::BulkInsert    => StoreOperations::BulkInsert.new(index_name),
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),
         StoreOperations::Search        => StoreOperations::Search.new(index_name),
+        StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
       }
     end
   end

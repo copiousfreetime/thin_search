@@ -103,5 +103,31 @@ module ThinSearch
         end
       end
     end
+
+
+    class FindOne < StoreOperation
+      def sql
+        @sql ||= <<-SQL
+         SELECT rowid, *
+           FROM #{index_name}
+          WHERE #{index_name} MATCH :match
+            SQL
+      end
+
+      def call(db, document)
+        rows = db.execute(sql, document_to_sql_bindings(document))
+        if doc = rows.first then
+          doc = document_from_row(doc)
+        end
+        doc
+      end
+
+      def document_to_sql_bindings(document)
+        {
+          ":match"      => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
+        }
+      end
+    end
+
   end
 end
