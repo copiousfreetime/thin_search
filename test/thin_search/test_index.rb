@@ -65,4 +65,15 @@ class TestIndex < ::ThinSearch::Test
     assert_equal(find_me.context, doc.context)
     assert_equal(find_me.context_id, doc.context_id)
   end
+
+  def test_can_update_a_document
+    find_me = docs.last
+    normal  = "testupdatesdocument"
+    find_me.normal = normal
+
+    index.update(find_me)
+    doc = index.find(find_me)
+    assert_equal(find_me.context, doc.context)
+    assert_equal(find_me.context_id, doc.context_id)
+  end
 end

@@ -40,5 +40,17 @@ module ThinSearch
     def find(indexable)
       store.find_one_document_in_index(name, indexable)
     end
+
+    # Public: Update a single document in the index
+    #
+    # This finds the given document with the same context/context_id in the
+    # index and updates its indexable content with the new values from the input
+    # document.
+    #
+    # Returns a Document or nil
+    def update(indexable)
+      store.update_document_in_index(name, indexable)
+    end
+
   end
 end
