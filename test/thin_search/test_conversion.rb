@@ -24,7 +24,7 @@ class TestConversion < ::ThinSearch::Test
     TestModel.clear
   end
 
-
+  ## Context
   def test_raises_error_if_missing_context
     error = assert_raises(ThinSearch::Conversion::Error) {
       options.delete(:context)
@@ -33,14 +33,12 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/context/, error.message)
   end
 
-  def test_raises_error_if_missing_context_id
-    error = assert_raises(ThinSearch::Conversion::Error) {
-      options.delete(:context_id)
-      ThinSearch::Conversion.new(options)
-    }
-    assert_match(/context_id/, error.message)
+  def test_knows_context_class
+     conversion = ThinSearch::Conversion.new(options)
+     assert_equal(::TestModel, conversion.context_class)
   end
 
+  ## Finder
   def test_raises_error_if_missing_finder
     error = assert_raises(ThinSearch::Conversion::Error) {
       options.delete(:finder)
@@ -49,12 +47,31 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/finder/, error.message)
   end
 
-  def test_knows_context_class
+  def test_finds_context_instance
      conversion = ThinSearch::Conversion.new(options)
-     assert_equal(::TestModel, conversion.context_class)
+     model      = TestModel.collection.values.first
+     instance   = conversion.find_by_id(model.clone.id)
+     assert_equal(model, instance)
+  end
+
+  def test_raises_error_if_invalid_proc_set_for_finder
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      options[:finder] = lambda { |a, b| nil }
+      ThinSearch::Conversion.new(options)
+    }
+    assert_match(/finder/, error.message)
   end
 
   ## Context Id
+  def test_raises_error_if_missing_context_id
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      options.delete(:context_id)
+      ThinSearch::Conversion.new(options)
+    }
+    assert_match(/context_id/, error.message)
+  end
+
+
   def test_extracts_context_id_as_symbol
      conversion = ThinSearch::Conversion.new(options)
      model      = TestModel.collection.values.last

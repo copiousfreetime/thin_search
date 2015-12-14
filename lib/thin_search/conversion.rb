@@ -96,6 +96,10 @@ module ThinSearch
       end
     end
 
+    def find_by_id(context_id)
+      finder_proc.call(context_id)
+    end
+
     def extract_context_id(context_instance)
       context_id_proc.call(context_instance)
     end
@@ -128,8 +132,8 @@ module ThinSearch
     def define_finder_proc(finder)
       if finder.kind_of?(Proc) then
         a = finder.arity
-        raise Error, ":finder proc has of #{a} instead of 1" unless a == 1
-        return finder
+        raise Error, "Invalid proc for :finder, given proc takes #{a} arguments, should accept only 1" unless a == 1
+        finder
       else
         lambda { |context_id|
           context_class.public_send(finder, context_id)
