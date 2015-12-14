@@ -6,11 +6,14 @@ class TestIndex < ::ThinSearch::Test
 
   attr_reader :index
   attr_reader :index_name
+  attr_reader :docs
 
   def setup
     super
     @index_name = "test_index"
     @index      = ::ThinSearch::Index.new(:store => store, :name => @index_name)
+    @docs       = Array.new(10) { fake_document }
+    @index.add(@docs)
   end
 
   def test_creates_index_on_instantiation
@@ -18,29 +21,25 @@ class TestIndex < ::ThinSearch::Test
   end
 
   def test_can_index_a_document
+    before_count = store.document_count_for(index_name)
     index.add(fake_document)
-    count = store.document_count_for(index_name)
+    after_count = store.document_count_for(index_name)
 
-    assert_equal(1, count)
+    assert_equal(1, after_count - before_count)
   end
 
   def test_can_index_multiple_documents
-    docs = Array.new(10) { fake_document }
-    index.add(docs)
     count = store.document_count_for(index_name)
+
     assert_equal(docs.count, count)
   end
 
   def test_can_count_documents
-    docs = Array.new(10) { fake_document }
-    index.add(docs)
     count = index.count
     assert_equal(docs.size, count)
   end
 
   def test_can_remove_a_document
-    docs = Array.new(10) { fake_document }
-    index.add(docs)
     count = index.count
     assert_equal(docs.size, count)
 
@@ -50,14 +49,12 @@ class TestIndex < ::ThinSearch::Test
   end
 
   def test_can_remove_multiple_documents
-    docs = Array.new(10) { fake_document }
-    index.add(docs)
-    count = store.document_count_for(index_name)
+    count = index.count
     assert_equal(docs.count, count)
 
     removing = docs.shift(5)
     index.remove(removing)
-    count = store.document_count_for(index_name)
+    count = index.count
     assert_equal(docs.count, count)
   end
 
