@@ -5,6 +5,44 @@ module ThinSearch
   # Internal: A Conversion records how to convert instances of some other
   # Indexable class to and from Document instances
   #
+  # A Conversion describes how to convert some other object into a Document
+  # instance. This is done through a set of options. All of the options except
+  # for :context may take a String, Symbol or Proc. If a String or Symbol is
+  # given then that represents a method name to invoke. If a Proc is given, that
+  # that is invoked directly.
+  #
+  # The :context and :finder options are used when converting a Document to an
+  # instance of the class in :context.
+  #
+  # :context - This is a String or a Class that is the fully qualified class
+  #            name of the objects that willb e converted to/from Document 
+  #            instances by this Conversion.
+  #
+  # :finder  - This is method to invoke on :context. The method will be passed a
+  #            single String parameter that is the **id** of the instance to
+  #            find. This is the value from Document#context_id. If :finder is a
+  #            Proc then it will be passed that parameter, and the Proc is
+  #            expected to return the appropriate instance.
+  #
+  # The :context_id, :facets, :imporant, and :normal options are used when
+  # converting an Indexable item to a Document. If these are a String or Symbol,
+  # then those are public methods that will be directly invoked on the Indexable
+  # item passed to Conversion.
+  #
+  # If these are Proc's then the Proc will be passed the instance that is being
+  # converted and the Proc is epxected to return the appropriate value.
+  #
+  # :context_id - String/Symbol/Proc that returns the uniquely identifing String
+  #               value of this instance in the context of :context
+  # :facets     - String/Symbol/Proc that returns a Hash of low-cardinality
+  #               items associated with the Indexable item.
+  # :important  - String/Symbol/Proc that returns a String or an Array of
+  #               Strings of high-important things in the Indexable item. When
+  #               searching the Index items that match this will be returned
+  #               before items that match :normal
+  # :normal     - String/Symbol/Proc that returns a String or an Array of
+  #               Strings of text that is to be indexed.
+  #
   class Conversion
     class Error < ::ThinSearch::Error ; end
 
@@ -214,12 +252,5 @@ module ThinSearch
         }
       end
     end
-
-    # Internal: create an Document from the given object
-    #
-    #
-    #
-    # Given an instance of the object this Conversion is 
-
   end
 end
