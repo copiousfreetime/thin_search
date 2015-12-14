@@ -248,5 +248,22 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/Unable to find conversion/, error.message)
   end
 
+  def test_class_level_conversion_to_indexable_document
+    ThinSearch::Conversion.register(options)
+    convert_me = TestModel.collection.values.first
+    document = ThinSearch::Conversion.to_indexable_document(convert_me)
+
+    assert_equal(convert_me.class.to_s, document.context)
+    assert_equal(convert_me.id, document.context_id)
+  end
+
+  def test_class_level_conversion_from_indexable_document
+    ThinSearch::Conversion.register(options)
+    convert_me = TestModel.collection.values.first
+    document = ThinSearch::Conversion.to_indexable_document(convert_me)
+
+    round_tripped = ThinSearch::Conversion.from_indexable_document(document)
+    assert_equal(convert_me, round_tripped)
+  end
 end
 

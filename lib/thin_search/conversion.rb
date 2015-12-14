@@ -48,6 +48,32 @@ module ThinSearch
       raise Error, "Unable to find conversion for #{klass} in registry"
     end
 
+    # Internal: convert the given indexable item to a Document.
+    #
+    # Assuming the given item's class is registered, then convert it to a
+    # Document
+    #
+    # Returns a Document
+    # raises Conversion::Error if it is unable to convert
+    #
+    def self.to_indexable_document(item)
+      conversion = item.kind_of?(Class) ? Conversion.for(item) : Conversion.for(item.class)
+      conversion.to_indexable_document(item)
+    end
+
+    # Internal: convert the given Document to its original class instance
+    #
+    # Assuming the given item's class is registered, then convert the document
+    # to its original class instance
+    #
+    # Returns an instannce
+    # raises Conversion::Error if it is unable to convert
+    #
+    def self.from_indexable_document(document)
+      conversion = Conversion.for(document.context)
+      conversion.from_indexable_document(document)
+    end
+
     attr_reader :context
     attr_reader :finder_proc
     attr_reader :context_id_proc
