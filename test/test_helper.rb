@@ -45,7 +45,6 @@ module ThinSearch
   class Test < ::Minitest::Test
 
     attr_reader :db_path
-    attr_reader :store
 
     def setup
       @db_path = TestPaths.test_db
@@ -56,7 +55,7 @@ module ThinSearch
     end
 
     def store
-      @store   ||= ::ThinSearch::Store.new(@db_path)
+      @store ||= ::ThinSearch::Store.new(@db_path)
     end
 
     def fake_document
