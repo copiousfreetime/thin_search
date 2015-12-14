@@ -97,4 +97,21 @@ class TestStore < ::ThinSearch::Test
     count = store.document_count_for(index_name)
     assert_equal(docs.size - 1, count)
   end
+
+  def test_update_document
+    docs = Array.new(10) { fake_document }
+    count = store.document_count_for(index_name)
+    assert(0, count)
+
+    store.add_documents_to_index(index_name, docs)
+    count = store.document_count_for(index_name)
+    assert_equal(docs.size, count)
+
+    find_me = docs.last.dup
+    doc = store.find_one_document_in_index(index_name, find_me)
+    doc.important = "testupdatedocument"
+    store.update_document_in_index(index_name, doc)
+    doc2 = store.find_one_document_in_index(index_name, find_me)
+    assert_equal("testupdatedocument", doc2.important)
+  end
 end

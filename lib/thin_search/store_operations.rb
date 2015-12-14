@@ -144,5 +144,34 @@ module ThinSearch
         }
       end
     end
+
+    class Update < StoreOperation
+      def sql
+        @sql ||= <<-SQL
+          UPDATE #{index_name}
+             SET context      = :context
+                ,context_id   = :context_id
+                ,facets       = json(:facets)
+                ,important    = :important
+                ,normal       = :normal
+           WHERE #{index_name} MATCH :match
+        SQL
+      end
+
+      def call(db, document)
+        db.execute(sql, document_to_sql_bindings(document))
+      end
+
+      def document_to_sql_bindings(document)
+        {
+          ":match"      => "context_id:\"#{document.context_id}\" AND context:\"#{document.context}\"",
+          ":context"    => document.context,
+          ":context_id" => document.context_id,
+          ":facets"     => document.facets.to_json,
+          ":important"  => indexable_string(document.important),
+          ":normal"     => indexable_string(document.normal)
+        }
+      end
+    end
   end
 end
