@@ -14,7 +14,7 @@ module ThinSearch
         );
 
         CREATE UNIQUE INDEX #{content_table}_idx
-            ON #{index_name}_content(context, context_id);
+            ON #{content_table}(context, context_id);
 
         CREATE VIRTUAL TABLE #{search_table} USING fts5(
               context    ,
@@ -23,7 +23,7 @@ module ThinSearch
               important,
               normal,
               tokenize = 'porter unicode61',
-              content = '#{index_name}_content',
+              content = '#{content_table}',
               content_rowid = 'rowid'
         );
 
