@@ -22,6 +22,7 @@ class TestConversion < ::ThinSearch::Test
   def teardown
     super
     TestModel.clear
+    ThinSearch::Conversion.registry.clear
   end
 
   ## Context
@@ -215,7 +216,30 @@ class TestConversion < ::ThinSearch::Test
       conversion.from_indexable_document(document)
     }
     assert_match(/Unable to convert/, error.message)
-
   end
+
+  def test_registers_a_conversion_as_hash
+    assert_equal(0, ::ThinSearch::Conversion.registry.size)
+    c = ::ThinSearch::Conversion.register(options)
+    assert_equal(1, ::ThinSearch::Conversion.registry.size)
+    assert_equal(::ThinSearch::Conversion, c.class)
+  end
+
+  def test_registers_a_conversion_as_object
+    assert_equal(0, ::ThinSearch::Conversion.registry.size)
+    conversion = ::ThinSearch::Conversion.new(options)
+    c = ::ThinSearch::Conversion.register(conversion)
+    assert_equal(1, ::ThinSearch::Conversion.registry.size)
+    assert_equal(::ThinSearch::Conversion, c.class)
+  end
+
+  def test_raises_error_if_invalid_object_is_registered
+    error = assert_raises(::ThinSearch::Conversion::Error) {
+      ::ThinSearch::Conversion.register(Object.new)
+    }
+    assert_match(/register/, error.message)
+  end
+
+
 end
 

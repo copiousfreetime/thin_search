@@ -20,12 +20,21 @@ module ThinSearch
 
     # Internal: register a Conversion with the registry
     #
-    # klass   - a Class or String representing the class to register
-    # options - a Hash of options. These are passed directly to #new
+    # options_or_conversion - a Hash of options to pas to #new or an instance of 
+    #                         Conversion
     #
-    # Returns the newly created Conversion instance
-    def self.register(klass, options)
-      registry[klass.to_s] = new(options)
+    # Returns the newly registered Conversion instance
+    def self.register(options_or_conversion)
+      conversion = nil
+      case options_or_conversion
+      when Hash
+        conversion = new(options_or_conversion)
+      when Conversion
+        conversion = options_or_conversion
+      else
+        raise Error, "It is only valid to register a Hash or a Conversion, you attempted to register #{options_or_conversion.class}"
+      end
+      registry[conversion.context] = conversion
     end
 
     # Internal: return the Conversion for the given class
