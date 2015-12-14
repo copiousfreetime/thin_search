@@ -51,6 +51,10 @@ module ThinSearch
       operations_for_index(index_name)[StoreOperations::Delete].call(db, document)
     end
 
+    def remove_documents_from_index(index_name, documents)
+      operations_for_index(index_name)[StoreOperations::BulkDelete].call(db, documents)
+    end
+
     def update_document_in_index(index_name, document)
       operations_for_index(index_name)[StoreOperations::Update].call(db, document)
     end
@@ -67,6 +71,7 @@ module ThinSearch
         StoreOperations::Search        => StoreOperations::Search.new(index_name),
         StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
         StoreOperations::Delete        => StoreOperations::Delete.new(index_name),
+        StoreOperations::BulkDelete    => StoreOperations::BulkDelete.new(index_name),
         StoreOperations::Update        => StoreOperations::Update.new(index_name),
       }
     end

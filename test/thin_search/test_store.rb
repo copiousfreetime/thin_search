@@ -98,6 +98,22 @@ class TestStore < ::ThinSearch::Test
     assert_equal(docs.size - 1, count)
   end
 
+  def test_bulk_remove_documents
+    docs = Array.new(10) { fake_document }
+
+    count = store.document_count_for(index_name)
+    assert(0, count)
+
+    store.add_documents_to_index(index_name, docs)
+    count = store.document_count_for(index_name)
+    assert_equal(docs.size, count)
+
+    removing = docs.shift(5)
+    store.remove_documents_from_index(index_name, removing)
+    count = store.document_count_for(index_name)
+    assert_equal(docs.size, count)
+  end
+
   def test_update_document
     docs = Array.new(10) { fake_document }
     count = store.document_count_for(index_name)

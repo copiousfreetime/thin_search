@@ -145,6 +145,24 @@ module ThinSearch
       end
     end
 
+
+    class BulkDelete < StoreOperation
+      def initialize(index_name)
+        @delete = Delete.new(index_name)
+      end
+
+      def call(db, documents)
+        db.transaction do |transaction|
+          transaction.prepare(@delete.sql) do |statement|
+            documents.each do |document|
+              @delete.call(transaction, document)
+            end
+          end
+        end
+      end
+    end
+
+
     class Update < StoreOperation
       def sql
         @sql ||= <<-SQL
