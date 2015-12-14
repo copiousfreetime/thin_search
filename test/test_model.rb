@@ -28,12 +28,12 @@ class TestModel
   end
 
   attr_reader :id
-  attr_reader :date
-  attr_reader :color
-  attr_reader :department
-  attr_reader :email
-  attr_reader :name
-  attr_reader :words
+  attr_accessor :date
+  attr_accessor :color
+  attr_accessor :department
+  attr_accessor :email
+  attr_accessor :name
+  attr_accessor :words
 
   def initialize
     @id         = SecureRandom.uuid
