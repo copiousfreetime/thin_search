@@ -96,26 +96,45 @@ module ThinSearch
       end
     end
 
+    # Internal: Find an instance of context_class by context_id
+    #
+    # Returns an instance of context_class
     def find_by_id(context_id)
       finder_proc.call(context_id)
     end
 
+    # Internal: return the context_id form an instance of context_class
+    #
+    # Returns the context_id
     def extract_context_id(context_instance)
       context_id_proc.call(context_instance)
     end
 
+    # Internal: returns the facets hash from the instance of context_class
+    #
+    # Returns a Hash
     def extract_facets(context_instance)
       facets_proc.call(context_instance)
     end
 
+    # Internal: returns the imortant data to index
+    #
+    # Returns an probably and Array of Strings
     def extract_important(context_instance)
       important_proc.call(context_instance)
     end
 
+    # Internal: returns the normal data to index
+    #
+    # Returns an probably and Array of Strings
     def extract_normal(context_instance)
       normal_proc.call(context_instance)
     end
 
+    # Internal: Finds the instance of context_class that matches the Document
+    #
+    # Returns an instance of context_class
+    # Raises Error
     def from_indexable_document(document)
       raise Error, "Unable to convert #{document.context} to #{context}" unless document.context == context
       find_by_id(document.context_id)
