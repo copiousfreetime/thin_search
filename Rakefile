@@ -8,6 +8,7 @@ This.homepage = "http://github.com/copiousfreetime/#{ This.name }"
 
 This.ruby_gemspec do |spec|
   spec.add_dependency('amalgalite', '~> 1.5')
+  spec.add_dependency('map', '~> 6.5')
 
   spec.add_development_dependency( 'rake'     , '~> 10.3')
   spec.add_development_dependency( 'minitest' , '~> 5.7' )

@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Jeremy Hinegardner", "Ara T. Howard"]
-  s.date = "2015-12-12"
+  s.date = "2015-12-15"
   s.description = "Thin Search aims to be the easiest way to add full text search to your Ruby application. Any object may be indexed and become searchable."
   s.email = ["jeremy@copiousfreetime.org", "ara.t.howard@gmail.com"]
   s.extra_rdoc_files = ["CONTRIBUTING.md", "HISTORY.md", "Manifest.txt", "README.md"]
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<amalgalite>, ["~> 1.5"])
+      s.add_runtime_dependency(%q<map>, ["~> 6.5"])
       s.add_development_dependency(%q<rake>, ["~> 10.3"])
       s.add_development_dependency(%q<minitest>, ["~> 5.7"])
       s.add_development_dependency(%q<rdoc>, ["~> 4.1"])
@@ -34,6 +35,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<faker>, ["~> 1.5"])
     else
       s.add_dependency(%q<amalgalite>, ["~> 1.5"])
+      s.add_dependency(%q<map>, ["~> 6.5"])
       s.add_dependency(%q<rake>, ["~> 10.3"])
       s.add_dependency(%q<minitest>, ["~> 5.7"])
       s.add_dependency(%q<rdoc>, ["~> 4.1"])
@@ -42,6 +44,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<amalgalite>, ["~> 1.5"])
+    s.add_dependency(%q<map>, ["~> 6.5"])
     s.add_dependency(%q<rake>, ["~> 10.3"])
     s.add_dependency(%q<minitest>, ["~> 5.7"])
     s.add_dependency(%q<rdoc>, ["~> 4.1"])

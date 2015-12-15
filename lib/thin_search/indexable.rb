@@ -1,3 +1,4 @@
+require 'map'
 require 'thin_search/document'
 
 module ThinSearch
@@ -26,11 +27,23 @@ module ThinSearch
 
     module ClassMethods
       def indexable( opts = {} )
-        unless opts.has_key?(:context) || opts.has_key?('context') then
-          opts[:context] = self
-        end
+        opts = Map.new(opts)
+        opts = _thin_search_default_options.merge(opts)
         conversion = ThinSearch::Conversion.register(opts) # self registers
         Indexable::Registry[conversion.context_class] = opts.fetch(:index) { ::ThinSearch::Global.index }
+      end
+
+      def _thin_search_default_options
+        Map.new.tap do |h|
+          h[:context]    = self
+          h[:context_id] = :id
+
+          if ::ThinSearch::Indexable.is_mongoid?(self) then
+            h[:finder] = lambda { |context_id| self.where(:id => context_id).first }
+          elsif ::ThinSearch::Indexable.is_active_record?(self) then
+            h[:finder] = lambda { |context_id| self.where(primary_key => context_id).limit(1).first }
+          end
+        end
       end
     end
 

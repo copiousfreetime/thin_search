@@ -1,3 +1,4 @@
+require 'map'
 require 'thin_search/error'
 require 'thin_search/document'
 
@@ -165,6 +166,7 @@ module ThinSearch
     #                        an instance of :context it will return the same data
     #
     def initialize(options = {})
+      options          = Map.new(options)
       @context         = validate_argument(options, :context).to_s
       @finder_proc     = define_finder_proc(validate_argument(options, :finder))
       @context_id_proc = define_extract_proc(:context_id, validate_argument(options, :context_id))
