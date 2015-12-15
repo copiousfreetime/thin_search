@@ -160,7 +160,6 @@ module ThinSearch
       end
     end
 
-
     class FindOne < StoreOperation
       def sql
         @sql ||= <<-SQL

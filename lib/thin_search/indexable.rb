@@ -77,11 +77,12 @@ module ThinSearch
 
     def self.ignoring_exceptions(&block)
       block.call
-    rescue nil
+    rescue Object
       nil
     end
 
     # Internal: is hte given class an ActiveRecord object
+    #
     def self.is_active_record?(klass)
       defined?(::ActiveRecord::Base) && (klass < ::ActiveRecord::Base)
     end
@@ -108,7 +109,6 @@ module ThinSearch
     # Internal: update this document in its index
     #
     def _thin_search_update
-      $stderr.puts "updating #{self.class}"
       _thin_search_index.update(self)
     end
 
