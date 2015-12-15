@@ -89,7 +89,7 @@ module ThinSearch
     private
 
     def to_indexable_documents(indexable)
-      list = Array(indexable)
+      list = [indexable].flatten
       list.map { |item| Conversion.to_indexable_document(item) }
     end
   end
