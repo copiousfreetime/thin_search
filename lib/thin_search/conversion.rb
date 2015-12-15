@@ -76,14 +76,17 @@ module ThinSearch
       registry[conversion.context] = conversion
     end
 
-    # Internal: return the Conversion for the given class
+    # Internal: return the Conversion for the given object
+    #
+    # This can take a String, a Class or an instance of something. It will
+    # attempt to figure out the right key to lookup in the registry
     #
     # Returns the Conversion instance for the klass
     # Raises Conversion::Error if the klass cannot be found
-    def self.for(klass_or_string)
-      registry.fetch(klass_or_string.to_s)
+    def self.for(item)
+      registry.fetch(registry_key_for(item))
     rescue KeyError
-      raise Error, "Unable to find conversion for #{klass_or_string} in registry"
+      raise Error, "Unable to find conversion for #{item} in registry"
     end
 
     # Internal: convert the given indexable item to a Document.
@@ -110,6 +113,22 @@ module ThinSearch
     def self.from_indexable_document(document)
       conversion = Conversion.for(document.context)
       conversion.from_indexable_document(document)
+    end
+
+    # Internal: Covnert the given Object into something that is valid as a
+    # registry key.
+    #
+    # Returns String
+    #
+    def self.registry_key_for(item)
+      case item
+      when String
+        item
+      when Class
+        item.to_s
+      else
+        item.class.to_s
+      end
     end
 
     attr_reader :context
