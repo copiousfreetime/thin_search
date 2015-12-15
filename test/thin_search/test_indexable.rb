@@ -8,6 +8,11 @@ require 'securerandom'
 class TestIndexable < ::ThinSearch::Test
   class TestIndexableModel
     include ::ThinSearch::Indexable
+    indexable :context_id => lambda { |i| i.id },
+      :finder     => lambda { |id| ::IndexableModel.find_by(:id => id) },
+      :facets     => lambda { |i| { :date => i.date, :department => i.department, :color => i.color } },
+      :important  => lambda { |i| [ i.email, i.name ] },
+      :normal     => :bio
   end
 
   def test_indexable_is_in_ancestor_list
@@ -16,5 +21,9 @@ class TestIndexable < ::ThinSearch::Test
 
   def test_adds_indexable_class_method
     assert(TestIndexableModel.respond_to?(:indexable), "Does not respond to :indexable")
+  end
+
+  def test_is_registered
+    assert(::ThinSearch::Indexable::Registry.has_key?(::TestIndexable::TestIndexableModel))
   end
 end
