@@ -37,11 +37,72 @@ module ThinSearch
     def self.included( klass )
       return unless klass.instance_of?( Class )
       klass.extend(ClassMethods)
+      inject_lifecycle_hooks(klass)
     end
 
+    # Internal: inject AR / Mongoid save/delete hooks
+    #
+    # Luckily at the moment its the same duck typing to hook into Mongoid or
+    # AcitveRecord hooks. So we just look for either of them and go from there.
+    #
+    def self.inject_lifecycle_hooks(klass)
+      if is_active_record?(klass) || is_mongoid?(klass) then
+
+        klass.after_create do
+          ignoring_excpetions { _thin_search_add }
+        end
+
+        klass.after_update do
+          ignoring_excpetions { _thin_search_update }
+        end
+
+        klass.after_destroy do
+          ignoring_excpetions { _thin_search_destroy }
+        end
+      end
+    end
+
+    def self.ignoring_exceptions(&block)
+      block.call
+    rescue nil
+      nil
+    end
+
+    # Internal: is hte given class an ActiveRecord object
+    def self.is_active_record?(klass)
+      defined?(::ActiveRecord::Base) && (klass < ::ActiveRecord::Base)
+    end
+
+    # Internal: is the given clasa a Mongoid::Document
+    #
+    def self.is_mongoid?(klass)
+      defined?(::Mongoid::Document) && (klass < ::Mongoid::Document)
+    end
+
+    # Internal: Find the Index for this document
+    #
     def _thin_search_index
       conversion = ::ThinSearch::Conversion.for(self)
       Registry.fetch(conversion.context_class)
+    end
+
+    # Internal: add this document to its index.
+    #
+    def _thin_search_add
+      _thin_search_index.add(self)
+    end
+
+    # Internal: update this document in its index
+    #
+    def _thin_search_update
+      $stderr.puts "updating #{self.class}"
+      _thin_search_index.update(self)
+    end
+
+    # Internal: delete this document from its index
+    #
+    def _thin_search_destroy
+      _thin_search_index.remove(self)
     end
   end
 end
