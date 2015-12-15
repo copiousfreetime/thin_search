@@ -112,4 +112,13 @@ class TestIndex < ::ThinSearch::Test
     list = index.search("gmail")
     assert_equal(expected.size, list.size)
   end
+
+  def test_truncates_index
+    count = index.count
+    assert_equal(docs.count, count)
+
+    index.truncate
+    after = index.count
+    assert_equal(0, after)
+  end
 end

@@ -71,6 +71,20 @@ module ThinSearch
     end
 
 
+    class TruncateIndex < StoreOperation
+      def sql
+        @sql ||= <<-SQL
+        DELETE FROM #{content_table};
+        DELETE FROM #{search_table};
+        SQL
+      end
+
+      def call(db)
+        db.execute_batch(sql)
+      end
+    end
+
+
     class Insert < StoreOperation
       def sql
         @sql ||= <<-SQL

@@ -164,4 +164,15 @@ class TestStore < ::ThinSearch::Test
     second = enumerator.next
     assert_equal(normal_doc.context_id, second.context_id)
   end
+
+  def test_truncates_index
+    docs = Array.new(10) { fake_document }
+    store.add_documents_to_index(index_name, docs)
+    before = store.document_count_for(index_name)
+    assert_equal(docs.size, before)
+
+    store.truncate_index(index_name)
+    after = store.document_count_for(index_name)
+    assert_equal(0, after)
+  end
 end

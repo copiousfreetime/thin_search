@@ -23,6 +23,10 @@ module ThinSearch
       operations_for_index(index_name)[StoreOperations::DropIndex].call(db)
     end
 
+    def truncate_index(index_name)
+      operations_for_index(index_name)[StoreOperations::TruncateIndex].call(db)
+    end
+
     def has_index?(name)
       db.schema.tables.has_key?("#{name}_content")
     end
@@ -69,6 +73,7 @@ module ThinSearch
       @index_operations[index_name] || {
         StoreOperations::CreateIndex   => StoreOperations::CreateIndex.new(index_name),
         StoreOperations::DropIndex     => StoreOperations::DropIndex.new(index_name),
+        StoreOperations::TruncateIndex => StoreOperations::TruncateIndex.new(index_name),
         StoreOperations::Insert        => StoreOperations::Insert.new(index_name),
         StoreOperations::BulkInsert    => StoreOperations::BulkInsert.new(index_name),
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),

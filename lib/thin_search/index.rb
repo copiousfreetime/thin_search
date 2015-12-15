@@ -79,6 +79,13 @@ module ThinSearch
       end
     end
 
+    # Public: Removes all documents from the index
+    #
+    # Returns nothing
+    def truncate
+      store.truncate_index(name)
+    end
+
     private
 
     def to_indexable_documents(indexable)
