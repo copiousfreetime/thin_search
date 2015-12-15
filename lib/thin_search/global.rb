@@ -66,7 +66,7 @@ module ThinSearch
     #
     def self.db_path
       basename = rails? ? "thin_search-#{Rails.env}.db" : "thin_search.db"
-      @db_path ||= Pathname.new(ENV.fetch(THIN_SEARCH_DB) { File.join(root_path, basename) })
+      @db_path ||= Pathname.new(ENV.fetch(THIN_SEARCH_DB_ENV) { File.join(root_path, basename) })
     end
 
     # Public: Access to a global ::ThinSearch::Store
