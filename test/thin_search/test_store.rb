@@ -11,6 +11,13 @@ class TestStore < ::ThinSearch::Test
     store.create_index(index_name)
   end
 
+  def test_creates_path_to_database
+    refute(test_tmp_path.exist?)
+    db_path = test_tmp_path.join("junk.db")
+    ::ThinSearch::Store.new(db_path)
+    assert(test_tmp_path.exist?)
+  end
+
   def test_creates_storage_index
     assert(store.has_index?(index_name))
   end

@@ -6,6 +6,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'securerandom'
 require 'faker'
+require 'fileutils'
 
 class TestPaths
   def self.root_dir
@@ -26,9 +27,7 @@ class TestPaths
   end
 
   def self.tmp_path(*args)
-    tmp = self.sub_path("tmp", *args)
-    File.mkdir_p(tmp)
-    return tmp
+    self.sub_path("tmp", *args)
   end
 
   def self.sub_path(sub,*args)
@@ -45,13 +44,16 @@ module ThinSearch
   class Test < ::Minitest::Test
 
     attr_reader :db_path
+    attr_reader :test_tmp_path
 
     def setup
-      @db_path = TestPaths.test_db
+      @db_path       = TestPaths.test_db
+      @test_tmp_path = Pathname.new(TestPaths.tmp_path(self.class.to_s.downcase))
     end
 
     def teardown
       File.unlink(@db_path) if File.exist?(@db_path)
+      test_tmp_path.rmtree if test_tmp_path.exist?
     end
 
     def store
