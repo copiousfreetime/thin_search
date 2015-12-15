@@ -174,7 +174,7 @@ module ThinSearch
     end
 
     def context_class
-      @context_class ||= ::Module.const_get(@context)
+      @context_class ||= constantize(@context)
     end
 
     def to_indexable_document(context_instance)
@@ -270,6 +270,22 @@ module ThinSearch
           context_instance.public_send(proc_or_method_name)
         }
       end
+    end
+
+    # Thanks yehuda
+    def constantize(context)
+      names    = context.split('::')
+      constant = Object
+      so_far   = []
+      names.each do |name|
+        so_far << name
+        if constant.const_defined?(name, false) then
+          constant = constant.const_get(name)
+        else
+          raise NameError, "Unable to find constant #{so_far.join("::")}"
+        end
+      end
+      return constant
     end
   end
 end
