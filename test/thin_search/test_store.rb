@@ -72,20 +72,8 @@ class TestStore < ::ThinSearch::Test
     should_match = docs.select { |d| d.important.flatten.join(' ') =~ /gmail/ }
 
     store.add_documents_to_index(index_name, docs)
-    results = Array.new
-    store.search_index(index_name, "gmail").each do |doc|
-      results << doc
-    end
+    results = store.search_index(index_name, "gmail")
     assert_equal(should_match.size, results.size)
-  end
-
-  def test_query_documents_returns_an_emuerator_if_no_block
-    docs = Array.new(10) { fake_document }
-    should_match = docs.select { |d| d.important.flatten.join(' ') =~ /gmail/ }
-
-    store.add_documents_to_index(index_name, docs)
-    enumerator = store.search_index(index_name, "gmail")
-    assert_equal(should_match.size, enumerator.count)
   end
 
   def test_find_one_document
