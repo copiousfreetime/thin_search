@@ -75,12 +75,13 @@ class TestQuery < ::ThinSearch::Test
     all_results = all_query.execute(index)
 
     page_1 = all_query.paginate(:per_page => 2, :page => 1).execute(index)
-    page_2 = all_query.paginate(:per_page => 2, :page => 2).execute(index)
-
     assert_equal(expected.shift(2).size, page_1.size)
-    assert_equal(expected.shift(2).size, page_2.size)
+
     expected_ids = all_results.raw_documents[0..1].map(&:context_id)
     assert_equal(expected_ids, page_1.raw_documents.map(&:context_id))
+
+    page_2 = all_query.paginate(:per_page => 2, :page => 2).execute(index)
+    assert_equal(expected.shift(2).size, page_2.size)
 
     expected_ids = all_results.raw_documents[2..3].map(&:context_id)
     assert_equal(expected_ids, page_2.raw_documents.map(&:context_id))
