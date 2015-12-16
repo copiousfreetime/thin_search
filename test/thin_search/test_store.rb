@@ -175,4 +175,13 @@ class TestStore < ::ThinSearch::Test
     after = store.document_count_for(index_name)
     assert_equal(0, after)
   end
+
+  def test_count_search_index
+    docs = Array.new(10) { fake_document }
+    should_match = docs.select { |d| d.important.flatten.join(' ') =~ /gmail/ }
+
+    store.add_documents_to_index(index_name, docs)
+    count = store.count_search_index(index_name, "gmail")
+    assert_equal(should_match.size, count)
+  end
 end

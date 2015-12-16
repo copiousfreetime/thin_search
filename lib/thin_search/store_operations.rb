@@ -163,6 +163,49 @@ module ThinSearch
       end
     end
 
+    class StringSearchCount < StoreOperation
+      def sql
+        @sql = <<-SQL
+          SELECT count(*)
+            FROM #{search_table}
+           WHERE #{search_table} MATCH :match
+        SQL
+      end
+
+      def call(db, query)
+        db.first_value_from(sql, query_to_sql_bindings(query))
+      end
+
+      def query_to_sql_bindings(query)
+        { ":match" => query }
+      end
+    end
+
+    class QuerySearchCount < StoreOperation
+      def sql(query)
+        parts = []
+        parts.push(<<-SQL)
+          SELECT count(*)
+            FROM #{search_table}
+           WHERE #{search_table} MATCH :match
+        SQL
+
+        if query.faceted? then
+
+        end
+
+        parts.join(' ')
+      end
+
+      def call(db, query)
+        db.first_value_from(sql(query), query_to_sql_bindings(query))
+      end
+
+      def query_to_sql_bindings(query)
+        { ":match" => query.expression }
+      end
+    end
+
     class QuerySearch < StoreOperation
 
       def sql(query)
