@@ -6,13 +6,13 @@ class TestDocument < ::ThinSearch::Test
   def test_raises_error_for_invalid_context
     doc = ::ThinSearch::Document.new
     error = assert_raises(::ThinSearch::Document::Error) { doc.validate }
-    assert(error.message == "context must be set", "Wrong message")
+    assert_equal("context must be set", error.message)
   end
 
   def test_raises_error_for_invalid_context_id
     doc = ::ThinSearch::Document.new( :context => self.class.name )
     error = assert_raises(::ThinSearch::Document::Error) { doc.validate }
-    assert(error.message == "context_id must be set", "Wrong message")
+    assert_equal("context_id must be set", error.message)
   end
 
   def test_create_document_via_yield
@@ -25,9 +25,9 @@ class TestDocument < ::ThinSearch::Test
     end
 
     refute( doc.context_id.nil? )
-    assert( doc.facets[:foo] == "bar" )
-    assert( doc.important == [ "important", "stuff" ] )
-    assert( doc.normal == [ "other", "things" ] )
+    assert_equal("bar", doc.facets[:foo])
+    assert_equal(%w[ important stuff ],  doc.important)
+    assert_equal(%w[ other things ],  doc.normal)
     assert_equal("TestDocument.#{uuid}", doc.unique_index_id)
 
   end
