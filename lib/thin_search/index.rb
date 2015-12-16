@@ -84,7 +84,8 @@ module ThinSearch
     #
     def execute_query(query)
       documents = store.search_index(name, query)
-      QueryResult.new(query, documents)
+      count     = store.count_search_index(name, query)
+      QueryResult.new(query, documents, count)
     end
 
     # Public: Removes all documents from the index
