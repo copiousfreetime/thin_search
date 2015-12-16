@@ -40,8 +40,10 @@ module ThinSearch
 
           if ::ThinSearch::Indexable.is_mongoid?(self) then
             h[:finder] = lambda { |context_id| self.where(:id => context_id).first }
+            h[:batch_finder] = lambda { |context_ids| self.where(:id.in => context_ids) }
           elsif ::ThinSearch::Indexable.is_active_record?(self) then
             h[:finder] = lambda { |context_id| self.where(primary_key => context_id).limit(1).first }
+            h[:batch_finder] = lambda { |context_ids| self.where(primary_key => context_ids) }
           end
         end
       end

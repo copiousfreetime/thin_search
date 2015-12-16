@@ -9,10 +9,11 @@ class TestIndexable < ::ThinSearch::Test
   class TestIndexableModel
     include ::ThinSearch::Indexable
     indexable :context_id => lambda { |i| i.id },
-      :finder     => lambda { |id| ::IndexableModel.find_by(:id => id) },
-      :facets     => lambda { |i| { :date => i.date, :department => i.department, :color => i.color } },
-      :important  => lambda { |i| [ i.email, i.name ] },
-      :normal     => :bio
+      :finder       => lambda { |id| TestIndexableModel.find_by(:id => id) },
+      :batch_finder => lambda { |ids| TestIndexableModel.batch_find_by_ids(ids) },
+      :facets       => lambda { |i| { :date => i.date, :department => i.department, :color => i.color } },
+      :important    => lambda { |i| [ i.email, i.name ] },
+      :normal       => :bio
   end
 
   def test_indexable_is_in_ancestor_list

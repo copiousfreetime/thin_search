@@ -10,12 +10,13 @@ class TestConversion < ::ThinSearch::Test
     super
     TestModel.populate(5)
     @options = {
-      :context    => "TestModel",
-      :context_id => :id,
-      :finder     => :find_by_id,
-      :facets     => :thinsearch_facets,
-      :important  => :thinsearch_important,
-      :normal     => :thinsearch_normal,
+      :context      => "TestModel",
+      :context_id   => :id,
+      :finder       => :find_by_id,
+      :batch_finder => :batch_find_by_ids,
+      :facets       => :thinsearch_facets,
+      :important    => :thinsearch_important,
+      :normal       => :thinsearch_normal,
     }
   end
 
@@ -61,6 +62,31 @@ class TestConversion < ::ThinSearch::Test
     }
     assert_match(/finder/, error.message)
   end
+
+  ## Batch Finder
+  def test_raises_error_if_missing_batch_finder
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      options.delete(:batch_finder)
+      ThinSearch::Conversion.new(options)
+    }
+    assert_match(/batch_finder/, error.message)
+  end
+
+  def test_finds_context_instances
+     conversion = ThinSearch::Conversion.new(options)
+     models      = TestModel.collection.values
+     instances   = conversion.batch_find_by_ids(models.map(&:id))
+     assert_equal(models, instances)
+  end
+
+  def test_raises_error_if_invalid_proc_set_for_batch_finder
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      options[:batch_finder] = lambda { |a, b| nil }
+      ThinSearch::Conversion.new(options)
+    }
+    assert_match(/batch_finder/, error.message)
+  end
+
 
   ## Context Id
   def test_raises_error_if_missing_context_id

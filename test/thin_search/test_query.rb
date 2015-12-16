@@ -14,14 +14,14 @@ class TestQuery < ::ThinSearch::Test
     super
     ThinSearch::Conversion.registry.delete("TestModel")
     ::ThinSearch::Conversion.register({
-      :context    => "TestModel",
-      :context_id => :id,
-      :finder     => :find_by_id,
-      :facets     => :thinsearch_facets,
-      :important  => :thinsearch_important,
-      :normal     => :thinsearch_normal,
-    }
-    )
+      :context      => "TestModel",
+      :context_id   => :id,
+      :finder       => :find_by_id,
+      :batch_finder => :batch_find_by_ids,
+      :facets       => :thinsearch_facets,
+      :important    => :thinsearch_important,
+      :normal       => :thinsearch_normal,
+    })
 
     TestModel.populate(10)
     @docs       = TestModel.collection.values

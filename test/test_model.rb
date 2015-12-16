@@ -16,6 +16,10 @@ class TestModel
     collection.fetch(id)
   end
 
+  def self.batch_find_by_ids(ids)
+    ids.map { |id| find_by_id(id) }
+  end
+
   def self.register(key, value)
     collection[key] = value
   end

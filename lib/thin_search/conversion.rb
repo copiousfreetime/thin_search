@@ -25,6 +25,13 @@ module ThinSearch
   #            Proc then it will be passed that parameter, and the Proc is
   #            expected to return the appropriate instance.
   #
+  # :batch_finder  - This is method to invoke on :context. The method will be 
+  #                  passed a an array of String parameters that are the **ids**
+  #                  of the instances to find. These are the values from 
+  #                  Document#context_id. If :batch_finder is a Proc then it will
+  #                  be passed the array as a parameter, and the Proc is expected 
+  #                  to return the appropriate instances.
+  #
   # The :context_id, :facets, :imporant, and :normal options are used when
   # converting an Indexable item to a Document. If these are a String or Symbol,
   # then those are public methods that will be directly invoked on the Indexable
@@ -137,6 +144,7 @@ module ThinSearch
 
     attr_reader :context
     attr_reader :finder_proc
+    attr_reader :batch_finder_proc
     attr_reader :context_id_proc
     attr_reader :facets_proc
     attr_reader :important_proc
@@ -151,6 +159,8 @@ module ThinSearch
     #                        called on the :context class to find an instance
     #                        or lambda that is called with the value of
     #                        Document#context_id (required)
+    #           :batch_finder - Array of String same concept as :finder but for
+    #                           arrays of context items
     #           :context_id- a String/Symbol that is the name of a method to call
     #                        on an instance of :context to retrieve its id. Or a
     #                        lambda that when given an instance of :context it
@@ -171,7 +181,8 @@ module ThinSearch
     def initialize(options = {})
       options          = Map.new(options)
       @context         = validate_argument(options, :context).to_s
-      @finder_proc     = define_finder_proc(validate_argument(options, :finder))
+      @finder_proc     = define_finder_proc(validate_argument(options, :finder), "finder")
+      @batch_finder_proc = define_finder_proc(validate_argument(options, :batch_finder), "batch_finder")
       @context_id_proc = define_extract_proc(:context_id, validate_argument(options, :context_id))
       @facets_proc     = define_extract_proc(:facets,    options.fetch(:facets, nil))
       @important_proc  = define_extract_proc(:important, options.fetch(:important, nil))
@@ -201,6 +212,13 @@ module ThinSearch
     # Returns an instance of context_class
     def find_by_id(context_id)
       finder_proc.call(context_id)
+    end
+
+    # Internal: Find a batch of instances from the list of context_ids
+    #
+    # Returns an Array of context_class instances
+    def batch_find_by_ids(context_ids)
+      batch_finder_proc.call(context_ids)
     end
 
     # Internal: return the context_id form an instance of context_class
@@ -248,10 +266,10 @@ module ThinSearch
       raise Error, "Missing conversion argument `#{argument}`"
     end
 
-    def define_finder_proc(finder)
+    def define_finder_proc(finder, proc_name)
       if finder.kind_of?(Proc) then
         a = finder.arity
-        raise Error, "Invalid proc for :finder, given proc takes #{a} arguments, should accept only 1" unless a == 1
+        raise Error, "Invalid proc for :#{proc_name}, given proc takes #{a} arguments, should accept only 1" unless a == 1
         finder
       else
         lambda { |context_id|
