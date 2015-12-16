@@ -32,6 +32,10 @@ module ThinSearch
       self
     end
 
+    def unique_index_id
+      [ context, context_id ].join(".")
+    end
+
     def valid?
       validate
     rescue ArgumentError

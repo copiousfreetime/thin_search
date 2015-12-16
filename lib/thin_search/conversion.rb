@@ -228,6 +228,16 @@ module ThinSearch
       context_id_proc.call(context_instance)
     end
 
+    # Internal: return the unique index id from an instance of context_class
+    #
+    # This value should be unique within the entire index this document is
+    # stored.
+    #
+    # Returns a String
+    def extract_unique_index_id(context_instance)
+      [context, extract_context_id(context_instance)].join(".")
+    end
+
     # Internal: returns the facets hash from the instance of context_class
     #
     # Returns a Hash

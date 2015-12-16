@@ -16,8 +16,9 @@ class TestDocument < ::ThinSearch::Test
   end
 
   def test_create_document_via_yield
+    uuid = SecureRandom.uuid
     doc = ::ThinSearch::Document.new( :context => self.class.name ) do |d|
-      d.context_id = SecureRandom.uuid
+      d.context_id = uuid
       d.facets     = { :foo => "bar" }
       d.important  = %w[ important stuff ]
       d.normal     = %w[ other things ]
@@ -27,6 +28,7 @@ class TestDocument < ::ThinSearch::Test
     assert( doc.facets[:foo] == "bar" )
     assert( doc.important == [ "important", "stuff" ] )
     assert( doc.normal == [ "other", "things" ] )
+    assert_equal("TestDocument.#{uuid}", doc.unique_index_id)
 
   end
 end
