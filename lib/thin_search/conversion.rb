@@ -231,7 +231,7 @@ module ThinSearch
     # stored.
     #
     # Returns a String
-    def extract_unique_index_id(context_instance)
+    def extract_index_unique_id(context_instance)
       [context, extract_context_id(context_instance)].join(".")
     end
 

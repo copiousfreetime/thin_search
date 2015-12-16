@@ -28,7 +28,6 @@ class TestDocument < ::ThinSearch::Test
     assert_equal("bar", doc.facets[:foo])
     assert_equal(%w[ important stuff ],  doc.important)
     assert_equal(%w[ other things ],  doc.normal)
-    assert_equal("TestDocument.#{uuid}", doc.unique_index_id)
-
+    assert_equal("TestDocument.#{uuid}", doc.index_unique_id)
   end
 end

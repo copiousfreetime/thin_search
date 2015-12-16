@@ -32,7 +32,7 @@ module ThinSearch
       self
     end
 
-    def unique_index_id
+    def index_unique_id
       [ context, context_id ].join(".")
     end
 

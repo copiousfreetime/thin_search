@@ -95,11 +95,22 @@ module ThinSearch
       defined?(::Mongoid::Document) && (klass < ::Mongoid::Document)
     end
 
+    # Internal: return the conversion for this object
+    #
+    def _thin_search_conversion
+      ::ThinSearch::Conversion.for(self)
+    end
+
     # Internal: Find the Index for this document
     #
     def _thin_search_index
-      conversion = ::ThinSearch::Conversion.for(self)
-      Registry.fetch(conversion.context_class)
+      Registry.fetch(_thin_search_conversion.context_class)
+    end
+
+    # Internal: return the index unique for this model
+    #
+    def _thin_search_index_unique_id
+      _thin_search_conversion.extract_index_unique_id(self)
     end
 
     # Internal: add this document to its index.

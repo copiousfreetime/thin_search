@@ -119,11 +119,11 @@ class TestConversion < ::ThinSearch::Test
     assert_match(/context_id/, error.message)
   end
 
-  def test_extracts_a_unique_index_id
+  def test_extracts_an_index_unique_id
      conversion = ThinSearch::Conversion.new(options)
      model      = TestModel.collection.values.last
      expected   = "TestModel.#{model.id}"
-     assert_equal(expected, conversion.extract_unique_index_id(model))
+     assert_equal(expected, conversion.extract_index_unique_id(model))
   end
 
   ## Facets
