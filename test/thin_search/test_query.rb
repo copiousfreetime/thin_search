@@ -50,7 +50,7 @@ class TestQuery < ::ThinSearch::Test
 
   def test_query_overrides_default_index
     index2      = ::ThinSearch::Index.new(:store => store, :name => "test_2_index")
-    collection2 = TestModel.generate_collection(5)
+    collection2 = TestModel.generate_collection(50)
     index2.add(collection2.values)
 
     expected    = collection2.values.select { |doc| doc.email =~ /gmail/ }
@@ -64,9 +64,9 @@ class TestQuery < ::ThinSearch::Test
   end
 
   def test_query_limits_to_per_page
-    query = ThinSearch::Query.new("gmail").paginate(:per_page => 2)
+    query = ThinSearch::Query.new("gmail").paginate(:per_page => 1)
     result = query.execute(index)
-    assert_equal(2, result.size)
+    assert_equal(1, result.size)
   end
 
   def test_query_skips_to_designated_page
