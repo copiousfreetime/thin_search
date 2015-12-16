@@ -1,6 +1,8 @@
 require 'amalgalite'
 require 'thin_search/store'
 require 'thin_search/conversion'
+require 'thin_search/query'
+require 'thin_search/query_result'
 
 module ThinSearch
   class Index
@@ -61,22 +63,28 @@ module ThinSearch
       store.update_document_in_index(name, document)
     end
 
-    # Public: Search for and yield the resulting items
+    # Public: Search for and return the Query
     #
-    # yields each object if a block is given
+    # expression - the search expression designation what text to find
+    # options    - additional search parameters
+    #              :page - which page of the full results to return
+    #              :per_page - how many results per_page
+    #              :contexts - limit to these contexts (classes)
     #
-    # Returns an Array of result instances if no block is given
-    def search(query, &block)
-      if block_given? then
-        store.search_index(name, query).each do |document|
-          yield Conversion.from_indexable_document(document)
-        end
-        nil
-      else
-        store.search_index(name, query).map do |document|
-          Conversion.from_indexable_document(document)
-        end
-      end
+    # Returns the Query
+    def search(expression, options = {})
+      Query.new(self, expression, options)
+    end
+
+    # Public: Query the index for Results
+    #
+    # query - the Query object that is going to be run
+    #
+    # Returns Result
+    #
+    def execute_query(query)
+      documents = store.search_index(name, query)
+      QueryResult.new(query, documents)
     end
 
     # Public: Removes all documents from the index

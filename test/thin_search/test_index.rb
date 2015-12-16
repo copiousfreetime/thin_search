@@ -96,21 +96,9 @@ class TestIndex < ::ThinSearch::Test
     assert_equal(find_me.id, doc.context_id)
   end
 
-  def test_search_yields_each_found_document
-    expected = docs.select { |doc| doc.email =~ /gmail/ }
-
-    found = []
-    index.search("gmail").each do |doc|
-      found << doc
-    end
-
-    assert(expected.size, found.size)
-  end
-
-  def test_search_returns_an_array_if_no_block
-    expected = docs.select { |doc| doc.email =~ /gmail/ }
-    list = index.search("gmail")
-    assert_equal(expected.size, list.size)
+  def test_search_yields_a_query
+    query = index.search("gmail")
+    assert(query.kind_of?(ThinSearch::Query))
   end
 
   def test_truncates_index

@@ -162,8 +162,40 @@ module ThinSearch
         { ":match" => query }
       end
     end
+
+    class QuerySearch < StoreOperation
+
+      def sql(query)
+        parts = []
+        parts.push(<<-SQL)
+          SELECT *
+            FROM #{search_table}
+           WHERE #{search_table} MATCH :match
+        SQL
+
+        if query.faceted? then
+
+        end
+
+        parts << "ORDER BY RANK"
+
+        if query.paginated?
+          parts << "LIMIT #{query.limit}"
+          parts << "OFFSET #{query.offset}"
+        end
+        parts.join(' ')
+      end
+
+      def call(db, query)
+        Array.new.tap do |documents|
+          db.execute(sql(query), query_to_sql_bindings(query)) do |row|
+            documents << document_from_row(row)
           end
         end
+      end
+
+      def query_to_sql_bindings(query)
+        { ":match" => query.expression }
       end
     end
 

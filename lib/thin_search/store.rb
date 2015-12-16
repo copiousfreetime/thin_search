@@ -85,6 +85,7 @@ module ThinSearch
         StoreOperations::BulkInsert    => StoreOperations::BulkInsert.new(index_name),
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),
         StoreOperations::StringSearch  => StoreOperations::StringSearch.new(index_name),
+        StoreOperations::QuerySearch   => StoreOperations::QuerySearch.new(index_name),
         StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
         StoreOperations::Delete        => StoreOperations::Delete.new(index_name),
         StoreOperations::BulkDelete    => StoreOperations::BulkDelete.new(index_name),
