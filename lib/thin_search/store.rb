@@ -58,6 +58,9 @@ module ThinSearch
       search_op.call(db, query)
     end
 
+    # Internal: return the count of documents that match
+    #
+    # Returns integer
     def count_search_index(index_name, query)
       search_op = case query
                   when Query
