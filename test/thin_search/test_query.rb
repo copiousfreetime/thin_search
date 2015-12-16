@@ -40,14 +40,50 @@ class TestQuery < ::ThinSearch::Test
     query = ThinSearch::Query.new("gmail")
     result = query.result(index)
 
-    assert(expected.size, result.size)
+    assert_equal(expected.size, result.size)
   end
 
-  # def test_search_returns_an_array_if_no_block
-  #   expected = docs.select { |doc| doc.email =~ /gmail/ }
-  #   query = index.search("gmail")
-  #   assert_equal(expected.size, list.size)
-  # end
+  def test_query_search_default_index
+    query = ThinSearch::Query.new("gmail", :index => index)
+    assert_equal(index, query.default_index)
+  end
 
+  def test_query_overrides_default_index
+    index2      = ::ThinSearch::Index.new(:store => store, :name => "test_2_index")
+    collection2 = TestModel.generate_collection(5)
+    index2.add(collection2.values)
+
+    expected    = collection2.values.select { |doc| doc.email =~ /gmail/ }
+    query       = ThinSearch::Query.new("gmail", :index => index)
+
+    result = query.result
+    result2 = query.result(index2)
+
+    refute_equal(result.size, result2.size)
+    assert_equal(expected.size, result2.size)
+  end
+
+  def test_query_limits_to_per_page
+    query = ThinSearch::Query.new("gmail").paginate(:per_page => 2)
+    result = query.execute(index)
+    assert_equal(2, result.size)
+  end
+
+  def test_query_skips_to_designated_page
+    expected    = docs.select { |doc| doc.email =~ /gmail/ }
+    all_query   = ThinSearch::Query.new("gmail")
+    all_results = all_query.execute(index)
+
+    page_1 = all_query.paginate(:per_page => 2, :page => 1).execute(index)
+    page_2 = all_query.paginate(:per_page => 2, :page => 2).execute(index)
+
+    assert_equal(expected.shift(2).size, page_1.size)
+    assert_equal(expected.shift(2).size, page_2.size)
+    expected_ids = all_results.raw_documents[0..1].map(&:context_id)
+    assert_equal(expected_ids, page_1.raw_documents.map(&:context_id))
+
+    expected_ids = all_results.raw_documents[2..3].map(&:context_id)
+    assert_equal(expected_ids, page_2.raw_documents.map(&:context_id))
+  end
 
 end

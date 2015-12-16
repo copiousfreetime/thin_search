@@ -73,6 +73,7 @@ module ThinSearch
     def result(index = default_index)
       index.execute_query(self)
     end
+    alias execute result
 
     def limit
       per_page
