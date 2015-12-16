@@ -23,6 +23,7 @@ module ThinSearch
         doc.important  = row["important"]
         doc.normal     = row["normal"]
         doc.rowid      = row["rowid"]
+        doc.rank       = row["rank"]
       end
     end
 

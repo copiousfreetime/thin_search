@@ -143,7 +143,7 @@ module ThinSearch
     class StringSearch < StoreOperation
       def sql
         @sql = <<-SQL
-          SELECT *
+          SELECT *,rank,rowid
             FROM #{search_table}
            WHERE #{search_table} MATCH :match
         ORDER BY rank
@@ -211,7 +211,7 @@ module ThinSearch
       def sql(query)
         parts = []
         parts.push(<<-SQL)
-          SELECT *
+          SELECT *,rank,rowid
             FROM #{search_table}
            WHERE #{search_table} MATCH :match
         SQL

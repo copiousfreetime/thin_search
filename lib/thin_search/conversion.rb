@@ -113,7 +113,10 @@ module ThinSearch
     #
     def self.from_indexable_document(document)
       conversion = Conversion.for(document.context)
-      conversion.from_indexable_document(document)
+      conversion.from_indexable_document(document).tap do |obj|
+        obj._thin_search_rank  = document.rank  if document.rank
+        obj._thin_search_rowid = document.rowid if document.rowid
+      end
     end
 
     # Internal: Covnert the given Object into something that is valid as a
