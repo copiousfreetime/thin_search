@@ -119,13 +119,5 @@ module ThinSearch
     def _thin_search_destroy
       _thin_search_index.remove(self)
     end
-
-    # Internal: the rank of this model in the most recent search query
-    #
-    attr_accessor :_thin_search_rank
-
-    # Internal: the rowid of this model in the search index
-    #
-    attr_accessor :_thin_search_rowid
   end
 end
