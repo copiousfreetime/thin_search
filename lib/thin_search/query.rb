@@ -23,6 +23,7 @@ module ThinSearch
     #              :page - which page of the full results to return
     #              :per_page - how many results per_page
     #              :contexts - limit to these contexts (classes)
+    #              :facets   - filter by facet items
     #              :index - set the Index instance that this query is run
     #                       against by default
     #
