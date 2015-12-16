@@ -12,7 +12,7 @@ module ThinSearch
 
     attr_reader :contexts
     attr_reader :page
-    attr_reader :per_page # also :size
+    attr_reader :per_page
     attr_reader :expression
     attr_reader :facets
     attr_reader :default_index
