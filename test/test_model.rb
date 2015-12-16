@@ -27,6 +27,15 @@ class TestModel
     end
   end
 
+  def self.generate_collection(count)
+    Hash.new.tap do |h|
+      count.times do
+        o = new
+        h[o.id] = o
+      end
+    end
+  end
+
   attr_reader :id
   attr_accessor :date
   attr_accessor :color
