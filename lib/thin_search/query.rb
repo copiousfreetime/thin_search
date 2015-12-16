@@ -14,20 +14,30 @@ module ThinSearch
     attr_reader :page
     attr_reader :per_page # also :size
     attr_reader :expression
-    attr_reader :index
     attr_reader :facets
+    attr_reader :default_index
 
-    def initialize(index, expression, opts = {})
-      @index      = index
-      @expression = expression.to_s
+    # Constructor:
+    # expression - the search expression designation what text to find
+    # options    - additional search parameters
+    #              :page - which page of the full results to return
+    #              :per_page - how many results per_page
+    #              :contexts - limit to these contexts (classes)
+    #              :index - set the Index instance that this query is run
+    #                       against by default
+    #
+    def initialize(expression, opts = {})
+      @expression    = expression.to_s
 
-      @result     = nil
-      @page       = nil
-      @per_page   = nil
+      @result        = nil
+      @page          = nil
+      @per_page      = nil
 
-      options     = Map.options(opts)
-      @context    = options.getopt(:contexts)
-      @facets     = options.getopt(:facets, :default => Hash.new)
+      options        = Map.options(opts)
+      @context       = options.getopt(:contexts)
+      @facets        = options.getopt(:facets, :default => Hash.new)
+      @default_index = options.getopt(:index)
+
       paginate(options)
     end
 
@@ -56,8 +66,12 @@ module ThinSearch
       self
     end
 
-    def result
-      @result ||= index.execute_query(self)
+    # Public: Execute the query on the given index
+    #
+    # Returns a QueryResult
+    #
+    def result(index = default_index)
+      index.execute_query(self)
     end
 
     def limit

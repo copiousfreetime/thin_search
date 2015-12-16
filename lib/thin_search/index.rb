@@ -73,7 +73,7 @@ module ThinSearch
     #
     # Returns the Query
     def search(expression, options = {})
-      Query.new(self, expression, options)
+      Query.new(expression, options.merge(:index => self))
     end
 
     # Public: Query the index for Results

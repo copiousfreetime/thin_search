@@ -4,7 +4,7 @@ require 'thin_search/index'
 require 'thin_search/conversion'
 require 'thin_search/query'
 
-class TestIndex < ::ThinSearch::Test
+class TestQuery < ::ThinSearch::Test
 
   attr_reader :index
   attr_reader :index_name
@@ -37,8 +37,8 @@ class TestIndex < ::ThinSearch::Test
 
   def test_search_returns_results
     expected = docs.select { |doc| doc.email =~ /gmail/ }
-    query = ThinSearch::Query.new(index, "gmail")
-    result = query.result
+    query = ThinSearch::Query.new("gmail")
+    result = query.result(index)
 
     assert(expected.size, result.size)
   end
