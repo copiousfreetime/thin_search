@@ -140,21 +140,28 @@ module ThinSearch
       end
     end
 
-
-    class Search < StoreOperation
+    class StringSearch < StoreOperation
       def sql
-        @sql ||= <<-SQL
+        @sql = <<-SQL
           SELECT *
             FROM #{search_table}
-           WHERE #{search_table} MATCH ?
+           WHERE #{search_table} MATCH :match
         ORDER BY rank
         SQL
       end
 
       def call(db, query)
-        Enumerator.new do |yielder|
-          db.execute(sql, query) do |row|
-            yielder << document_from_row(row)
+        Array.new.tap do |documents|
+          db.execute(sql,query_to_sql_bindings(query)) do |row|
+            documents << document_from_row(row)
+          end
+        end
+      end
+
+      def query_to_sql_bindings(query)
+        { ":match" => query }
+      end
+    end
           end
         end
       end

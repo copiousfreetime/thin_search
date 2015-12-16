@@ -45,9 +45,16 @@ module ThinSearch
 
     # Internal: return an Enumerator of documents that match
     #
-    # Returns Enumerator
+    # Returns Array of Documents
     def search_index(index_name, query)
-      search_op = operations_for_index(index_name)[StoreOperations::Search]
+      search_op = case query
+                  when Query
+                    operations_for_index(index_name)[StoreOperations::QuerySearch]
+                  when String
+                    operations_for_index(index_name)[StoreOperations::StringSearch]
+                  else
+                    raise Error, "Unknown way to search #{query}"
+                  end
       search_op.call(db, query)
     end
 
@@ -77,7 +84,7 @@ module ThinSearch
         StoreOperations::Insert        => StoreOperations::Insert.new(index_name),
         StoreOperations::BulkInsert    => StoreOperations::BulkInsert.new(index_name),
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),
-        StoreOperations::Search        => StoreOperations::Search.new(index_name),
+        StoreOperations::StringSearch  => StoreOperations::StringSearch.new(index_name),
         StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
         StoreOperations::Delete        => StoreOperations::Delete.new(index_name),
         StoreOperations::BulkDelete    => StoreOperations::BulkDelete.new(index_name),

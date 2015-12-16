@@ -157,11 +157,11 @@ class TestStore < ::ThinSearch::Test
     important_doc.important = "important"
     store.add_document_to_index(index_name, important_doc)
 
-    enumerator = store.search_index(index_name, "important")
-    first = enumerator.next
+    list = store.search_index(index_name, "important")
+    first = list.shift
     assert_equal(important_doc.context_id, first.context_id)
 
-    second = enumerator.next
+    second = list.shift
     assert_equal(normal_doc.context_id, second.context_id)
   end
 
