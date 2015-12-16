@@ -12,6 +12,7 @@ class TestQuery < ::ThinSearch::Test
 
   def setup
     super
+    ThinSearch::Conversion.registry.delete("TestModel")
     ::ThinSearch::Conversion.register({
       :context    => "TestModel",
       :context_id => :id,
@@ -32,7 +33,6 @@ class TestQuery < ::ThinSearch::Test
   def teardown
     super
     TestModel.clear
-    ThinSearch::Conversion.registry.clear
   end
 
   def test_search_returns_results

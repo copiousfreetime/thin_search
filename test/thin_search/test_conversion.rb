@@ -22,7 +22,6 @@ class TestConversion < ::ThinSearch::Test
   def teardown
     super
     TestModel.clear
-    ThinSearch::Conversion.registry.clear
   end
 
   ## Context
@@ -219,17 +218,21 @@ class TestConversion < ::ThinSearch::Test
   end
 
   def test_registers_a_conversion_as_hash
-    assert_equal(0, ::ThinSearch::Conversion.registry.size)
+    ::ThinSearch::Conversion.registry.delete("TestModel")
+    before_size = ::ThinSearch::Conversion.registry.size
     c = ::ThinSearch::Conversion.register(options)
-    assert_equal(1, ::ThinSearch::Conversion.registry.size)
+    after_size = ::ThinSearch::Conversion.registry.size
+    assert_equal(1, after_size - before_size)
     assert_equal(::ThinSearch::Conversion, c.class)
   end
 
   def test_registers_a_conversion_as_object
-    assert_equal(0, ::ThinSearch::Conversion.registry.size)
+    ::ThinSearch::Conversion.registry.delete("TestModel")
+    before_size = ::ThinSearch::Conversion.registry.size
     conversion = ::ThinSearch::Conversion.new(options)
     c = ::ThinSearch::Conversion.register(conversion)
-    assert_equal(1, ::ThinSearch::Conversion.registry.size)
+    after_size = ::ThinSearch::Conversion.registry.size
+    assert_equal(1, after_size - before_size)
     assert_equal(::ThinSearch::Conversion, c.class)
   end
 
@@ -242,7 +245,7 @@ class TestConversion < ::ThinSearch::Test
 
   def test_raises_error_if_model_cannot_be_found
     error = assert_raises(::ThinSearch::Conversion::Error) {
-      ::ThinSearch::Conversion.for(::TestModel)
+      ::ThinSearch::Conversion.for("InvalidTesModel")
     }
 
     assert_match(/Unable to find conversion/, error.message)

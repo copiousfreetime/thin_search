@@ -12,6 +12,7 @@ class TestIndex < ::ThinSearch::Test
 
   def setup
     super
+    ThinSearch::Conversion.registry.delete("TestModel")
     ::ThinSearch::Conversion.register({
       :context    => "TestModel",
       :context_id => :id,
@@ -32,7 +33,6 @@ class TestIndex < ::ThinSearch::Test
   def teardown
     super
     TestModel.clear
-    ThinSearch::Conversion.registry.clear
   end
 
   def test_creates_index_on_instantiation
