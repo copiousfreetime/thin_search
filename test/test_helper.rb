@@ -44,16 +44,17 @@ module ThinSearch
   class Test < ::Minitest::Test
 
     attr_reader :db_path
-    attr_reader :test_tmp_path
+    attr_reader :testing_tmp_path
 
     def setup
       @db_path       = TestPaths.test_db
-      @test_tmp_path = Pathname.new(TestPaths.tmp_path(self.class.to_s.downcase))
+      @testing_tmp_path = Pathname.new(TestPaths.tmp_path(self.class.to_s.downcase))
     end
 
     def teardown
       File.unlink(@db_path) if File.exist?(@db_path)
-      test_tmp_path.rmtree if test_tmp_path.exist?
+      testing_tmp_path.rmtree if testing_tmp_path.exist?
+      File.unlink(::ThinSearch::Global.db_path) if File.exist?(::ThinSearch::Global.db_path)
     end
 
     def store

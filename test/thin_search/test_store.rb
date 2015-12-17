@@ -12,10 +12,10 @@ class TestStore < ::ThinSearch::Test
   end
 
   def test_creates_path_to_database
-    refute(test_tmp_path.exist?)
-    db_path = test_tmp_path.join("junk.db")
+    refute(testing_tmp_path.exist?)
+    db_path = testing_tmp_path.join("junk.db")
     ::ThinSearch::Store.new(db_path)
-    assert(test_tmp_path.exist?)
+    assert(testing_tmp_path.exist?)
   end
 
   def test_creates_storage_index
