@@ -2,10 +2,9 @@ require 'faker'
 require 'securerandom'
 
 class TestModel
-  @collection = Hash.new
 
   def self.collection
-    @collection
+    @collection ||= Hash.new
   end
 
   def self.clear
@@ -37,6 +36,7 @@ class TestModel
         o = new
         h[o.id] = o
       end
+      collection.merge!(h)
     end
   end
 
@@ -68,5 +68,9 @@ class TestModel
 
   def thinsearch_normal
     words
+  end
+
+  def _thin_search_index_unique_id
+    [ self.class.name, id ].join(".")
   end
 end
