@@ -88,6 +88,7 @@ module ThinSearch
 
     def more_than_zero(i)
       return nil if i.nil?
+      i = Integer(i)
       return nil if i <= 0
       i
     end
