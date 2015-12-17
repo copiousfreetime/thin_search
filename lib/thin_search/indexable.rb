@@ -64,23 +64,29 @@ module ThinSearch
       if is_active_record?(klass) || is_mongoid?(klass) then
 
         klass.after_create do
-          ignoring_excpetions { _thin_search_add }
+          begin
+            _thin_search_add
+          rescue Object
+            nil
+          end
         end
 
         klass.after_update do
-          ignoring_excpetions { _thin_search_update }
+          begin
+            _thin_search_update
+          rescue Object
+            nil
+          end
         end
 
         klass.after_destroy do
-          ignoring_excpetions { _thin_search_destroy }
+          begin
+            _thin_search_destroy
+          rescue Object
+            nil
+          end
         end
       end
-    end
-
-    def self.ignoring_exceptions(&block)
-      block.call
-    rescue Object
-      nil
     end
 
     # Internal: is hte given class an ActiveRecord object
