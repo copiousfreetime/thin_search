@@ -65,10 +65,10 @@ module ThinSearch
     end
 
     def order_models(ordered_index_ids, models_by_index_id)
-      Array.new.tap do |models|
+      Array.new.tap do |ordered_models|
         ordered_index_ids.each do |index_unique_id|
           if model = models_by_index_id[index_unique_id] then
-            models << model
+            ordered_models << model
           end
         end
       end
