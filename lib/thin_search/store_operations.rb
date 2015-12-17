@@ -159,7 +159,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => query }
+        { ":match" => "\"#{query}\"" }
       end
     end
 
@@ -177,7 +177,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => query }
+        { ":match" => "\"#{query}\"" }
       end
     end
 
@@ -202,7 +202,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => query.expression }
+        { ":match" => "\"#{query.expression}\"" }
       end
     end
 
@@ -238,7 +238,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => query.expression }
+        { ":match" => "\"#{query.expression}\"" }
       end
     end
 
