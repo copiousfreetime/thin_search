@@ -28,7 +28,7 @@ class ThisProject
     @exclude_from_manifest = Regexp.union(/\.(git|DS_Store)/,
                                           /^(doc|coverage|pkg|tmp|Gemfile(\.lock)?)/,
                                           /^[^\/]+\.gemspec/,
-                                          /\.(swp|jar|bundle|so|rvmrc|travis.yml)$/,
+                                          /\.(db|swp|jar|bundle|so|rvmrc|travis.yml)$/,
                                           /~$/)
     @gemspecs              = Hash.new
     yield self if block_given?
