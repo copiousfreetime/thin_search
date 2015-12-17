@@ -10,7 +10,7 @@ module ThinSearch
     attr_reader :models
 
     extend Forwardable
-    def_delegator :@models, :each
+    def_delegators :@models, :each, :size
 
 
     def initialize(query, documents, total_count = nil)
@@ -18,14 +18,6 @@ module ThinSearch
       @raw_documents       = documents
       @total_count         = total_count || @raw_documents.size
       @models              = inflate_documents_to_models(raw_documents)
-    end
-
-    def each(&block)
-      models.each(&block)
-    end
-
-    def size
-      @raw_documents.size
     end
 
     def num_pages
