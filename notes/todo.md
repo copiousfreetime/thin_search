@@ -1,4 +1,4 @@
 ## Search
 * SearchExpression from rails_app_m
-* pass a hash of faces to the index search, and operation >, < , =, >=, <=
+* facet operations < > >= <=
 * verbatum - additional column that has the highest rank?
