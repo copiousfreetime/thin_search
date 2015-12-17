@@ -8,6 +8,8 @@ require 'securerandom'
 require 'faker'
 require 'fileutils'
 
+require 'thin_search'
+
 class TestPaths
   def self.root_dir
     @root_dir ||= (

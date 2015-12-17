@@ -191,7 +191,9 @@ module ThinSearch
         SQL
 
         if query.faceted? then
-
+          query.facets.each do |name, value|
+            parts << "AND json_extract(facets, '$.#{name}') = '#{value}'"
+          end
         end
 
         parts.join(' ')
@@ -217,7 +219,9 @@ module ThinSearch
         SQL
 
         if query.faceted? then
-
+          query.facets.each do |name, value|
+            parts << "AND json_extract(facets, '$.#{name}') = '#{value}'"
+          end
         end
 
         parts << "ORDER BY RANK"

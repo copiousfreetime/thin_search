@@ -87,4 +87,12 @@ class TestQuery < ::ThinSearch::Test
     assert_equal(expected_ids, page_2.raw_documents.map(&:context_id))
   end
 
+  def test_query_facets
+    expected = docs.group_by { |doc| doc.color }
+    color = expected.keys.first
+    query = ThinSearch::Query.new("2015", :facets => { :color => color })
+    results = query.execute(index)
+    assert_equal(expected[color].size, results.size)
+  end
+
 end
