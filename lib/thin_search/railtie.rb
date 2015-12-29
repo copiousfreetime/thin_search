@@ -33,7 +33,7 @@ if defined?(Rails) then
         public_system_path        = File.join(public_path, 'system')
 
         is_cap_deploy = File.exist?(shared_public_system_path) &&
-                        File.link?(public_system_path) &&
+                        File.symlink?(public_system_path) &&
                         (realpath(shared_public_system_path) == realpath(public_system_path))
 
         return is_cap_deploy
