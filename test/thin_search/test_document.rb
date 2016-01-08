@@ -22,12 +22,14 @@ class TestDocument < ::ThinSearch::Test
       d.facets     = { :foo => "bar" }
       d.important  = %w[ important stuff ]
       d.normal     = %w[ other things ]
+      d.exact      = %w[ wibble ]
     end
 
     refute( doc.context_id.nil? )
     assert_equal("bar", doc.facets[:foo])
     assert_equal(%w[ important stuff ],  doc.important)
     assert_equal(%w[ other things ],  doc.normal)
+    assert_equal([Digest::MD5.hexdigest("wibble")],  doc.exact)
     assert_equal("TestDocument.#{uuid}", doc.index_unique_id)
   end
 end

@@ -17,7 +17,8 @@ class TestQueryResult < ::ThinSearch::Test
       :batch_finder => lambda { |ids| ids.map { |i| TestModel2::Collection[i] } },
       :facets       => :thinsearch_facets,
       :important    => :thinsearch_important,
-      :normal       => :thinsearch_normal
+      :normal       => :thinsearch_normal,
+      :exact        => :thinsearch_exact
   end
 
   class TestModel3 < TestModel
@@ -29,16 +30,9 @@ class TestQueryResult < ::ThinSearch::Test
       :batch_finder => lambda { |ids| ids.map { |i| TestModel3::Collection[i] } },
       :facets       => :thinsearch_facets,
       :important    => :thinsearch_important,
-      :normal       => :thinsearch_normal
+      :normal       => :thinsearch_normal,
+      :exact        => :thinsearch_exact
   end
-
-
-  #* have an index option to return the Documents instead of the objects
-  #* efficient inflation of large numbers of objects from Documents
-
-  #* REsults needs to have .total_pages .num_pages .current_page .
-  #* show documents, missing documents in original via _thinsearch_documents
-  # * and use .models to inflate at the end.
 
   attr_reader :collection_1
   attr_reader :collection_2

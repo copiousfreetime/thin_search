@@ -9,6 +9,7 @@ module ThinSearch
           context    TEXT,
           context_id TEXT,
           facets     TEXT,
+          exact      TEXT,
           important  TEXT,
           normal     TEXT
         );
@@ -20,6 +21,7 @@ module ThinSearch
               context    ,
               context_id ,
               facets,
+              exact,
               important,
               normal,
               tokenize = 'porter unicode61',
@@ -27,26 +29,26 @@ module ThinSearch
               content_rowid = 'rowid'
         );
 
-        INSERT INTO #{search_table}(#{search_table}, rank) VALUES('rank', 'bm25(1.0,1.0,1.0,100.0,2.0)');
+        INSERT INTO #{search_table}(#{search_table}, rank) VALUES('rank', 'bm25(1.0, 1.0, 1.0, 1000.0, 100.0, 2.0)');
 
         CREATE TRIGGER #{content_table}_after_insert_tgr AFTER INSERT ON #{content_table}
         BEGIN
-          INSERT INTO #{search_table}(rowid, context, context_id, facets, important, normal)
-               VALUES (new.rowid, new.context, new.context_id, new.facets, new.important, new.normal);
+          INSERT INTO #{search_table}(rowid, context, context_id, facets, exact, important, normal)
+          VALUES (new.rowid, new.context, new.context_id, new.facets, new.exact, new.important, new.normal);
         END;
 
         CREATE TRIGGER #{content_table}_after_delete_tgr AFTER DELETE ON #{content_table}
         BEGIN
-          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, important, normal)
-               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.important, old.normal);
+          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, exact, important, normal)
+               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.exact, old.important, old.normal);
         END;
 
         CREATE TRIGGER #{content_table}_after_update_tgr AFTER UPDATE ON #{content_table}
         BEGIN
-          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, important, normal)
-               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.important, old.normal);
-          INSERT INTO #{search_table}(rowid, context, context_id, facets, important, normal)
-               VALUES (new.rowid, new.context, new.context_id, new.facets, new.important, new.normal);
+          INSERT INTO #{search_table}(#{search_table}, rowid, context, context_id, facets, exact, important, normal)
+               VALUES ('delete', old.rowid, old.context, old.context_id, old.facets, old.exact, old.important, old.normal);
+          INSERT INTO #{search_table}(rowid, context, context_id, facets, exact, important, normal)
+               VALUES (new.rowid, new.context, new.context_id, new.exact, new.facets, new.important, new.normal);
         END;
         SQL
       end
@@ -88,8 +90,8 @@ module ThinSearch
     class Insert < StoreOperation
       def sql
         @sql ||= <<-SQL
-        INSERT INTO #{content_table} (context, context_id, facets, important, normal )
-        VALUES (:context, :context_id, json(:facets), :important, :normal)
+        INSERT INTO #{content_table} (context, context_id, facets, exact, important, normal )
+        VALUES (:context, :context_id, json(:facets), :exact, :important, :normal)
         SQL
       end
 
@@ -106,8 +108,9 @@ module ThinSearch
           ":context"    => document.context,
           ":context_id" => document.context_id,
           ":facets"     => document.facets.to_json,
+          ":exact"      => indexable_string(document.exact),
           ":important"  => indexable_string(document.important),
-          ":normal"     => indexable_string(document.normal)
+          ":normal"     => indexable_string(document.normal),
         }
       end
     end
@@ -159,7 +162,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => "\"#{query}\"" }
+        { ":match" => "(#{query}) OR (#{exactable_string(query)})" }
       end
     end
 
@@ -177,7 +180,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => "\"#{query}\"" }
+        { ":match" => "(#{query}) OR (#{exactable_string(query)})" }
       end
     end
 
@@ -204,7 +207,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => "\"#{query.expression}\"" }
+        { ":match" => "(#{query.expression}) OR (#{exactable_string(query.expression)})" }
       end
     end
 
@@ -242,7 +245,7 @@ module ThinSearch
       end
 
       def query_to_sql_bindings(query)
-        { ":match" => "\"#{query.expression}\"" }
+        { ":match" => "(#{query.expression}) OR (#{exactable_string(query.expression)})" }
       end
     end
 
@@ -317,6 +320,7 @@ module ThinSearch
         @sql ||= <<-SQL
           UPDATE #{content_table}
              SET facets       = json(:facets)
+                ,exact        = :exact
                 ,important    = :important
                 ,normal       = :normal
            WHERE context = :context
@@ -333,6 +337,7 @@ module ThinSearch
           ":context"    => document.context,
           ":context_id" => document.context_id,
           ":facets"     => document.facets.to_json,
+          ":exact"      => indexable_string(document.exact),
           ":important"  => indexable_string(document.important),
           ":normal"     => indexable_string(document.normal)
         }

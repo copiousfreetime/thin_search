@@ -40,13 +40,14 @@ class TestModel
     end
   end
 
-  attr_reader :id
+  attr_reader   :id
   attr_accessor :date
   attr_accessor :color
   attr_accessor :department
   attr_accessor :email
   attr_accessor :name
   attr_accessor :words
+  attr_accessor :creature
 
   def initialize
     @id         = SecureRandom.uuid
@@ -56,6 +57,7 @@ class TestModel
     @email      = ::Faker::Internet.free_email
     @name       = ::Faker::Name.name
     @words      = ::Faker::Hipster.paragraph
+    @creature   = ::Faker::Team.creature
   end
 
   def thinsearch_facets
@@ -68,6 +70,10 @@ class TestModel
 
   def thinsearch_normal
     words
+  end
+
+  def thinsearch_exact
+    creature
   end
 
   def _thin_search_index_unique_id

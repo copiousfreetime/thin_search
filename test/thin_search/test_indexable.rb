@@ -13,7 +13,8 @@ class TestIndexable < ::ThinSearch::Test
       :batch_finder => lambda { |ids| TestIndexableModel.batch_find_by_ids(ids) },
       :facets       => lambda { |i| { :date => i.date, :department => i.department, :color => i.color } },
       :important    => lambda { |i| [ i.email, i.name ] },
-      :normal       => :bio
+      :normal       => :bio,
+      :exact        => :creature
   end
 
   def test_indexable_is_in_ancestor_list

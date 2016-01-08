@@ -17,6 +17,7 @@ class TestConversion < ::ThinSearch::Test
       :facets       => :thinsearch_facets,
       :important    => :thinsearch_important,
       :normal       => :thinsearch_normal,
+      :exact        => :thinsearch_exact
     }
   end
 
@@ -184,6 +185,36 @@ class TestConversion < ::ThinSearch::Test
     }
     assert_match(/important/, error.message)
   end
+
+  ## Exact
+  def test_extracts_exact
+     conversion = ThinSearch::Conversion.new(options)
+     model      = TestModel.collection.values.last
+     assert_equal(model.thinsearch_exact, conversion.extract_exact(model))
+  end
+
+  def test_extracts_exact_as_proc
+     options[:exact] = lambda { |i| %w[ foo bar baz ] }
+     conversion = ThinSearch::Conversion.new(options)
+     model      = TestModel.collection.values.last
+     assert_equal(%w[ foo bar baz ], conversion.extract_exact(model))
+  end
+
+  def test_extracts_exact_as_nil
+     options.delete(:exact)
+     conversion = ThinSearch::Conversion.new(options)
+     model      = TestModel.collection.values.last
+     assert_nil(conversion.extract_exact(model))
+  end
+
+  def test_raises_error_if_invalid_proc_set_for_exact
+    error = assert_raises(ThinSearch::Conversion::Error) {
+      options[:exact] = lambda { nil }
+      ThinSearch::Conversion.new(options)
+    }
+    assert_match(/exact/, error.message)
+  end
+
 
 
   ## Normal

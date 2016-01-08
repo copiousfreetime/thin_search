@@ -162,6 +162,38 @@ class TestStore < ::ThinSearch::Test
     assert_equal(normal_doc.context_id, second.context_id)
   end
 
+  def test_search_returns_exact_as_highest_rank
+    normal_doc           = fake_document
+    normal_doc.normal    = %w[ exact exact exact ]
+    normal_doc.important = "normal"
+    normal_doc.exact     = "normal"
+    store.add_document_to_index(index_name, normal_doc)
+
+    important_doc           = fake_document
+    important_doc.normal    = %w[ document document ]
+    important_doc.important = "exact"
+    important_doc.exact     = "important"
+    store.add_document_to_index(index_name, important_doc)
+
+    exact_doc           = fake_document
+    exact_doc.normal    = %w[ best best ]
+    exact_doc.important = "important"
+    exact_doc.exact     = "exact"
+    store.add_document_to_index(index_name, exact_doc)
+
+    list = store.search_index(index_name, "exact")
+
+    first = list.shift
+    assert_equal(exact_doc.context_id, first.context_id)
+
+    second = list.shift
+    assert_equal(important_doc.context_id, second.context_id)
+
+    third = list.shift
+    assert_equal(normal_doc.context_id, third.context_id)
+
+  end
+
   def test_truncates_index
     docs = Array.new(10) { fake_document }
     store.add_documents_to_index(index_name, docs)

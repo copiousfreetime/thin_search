@@ -50,6 +50,8 @@ module ThinSearch
   #               before items that match :normal
   # :normal     - String/Symbol/Proc that returns a String or an Array of
   #               Strings of text that is to be indexed.
+  # :exact      - String/Symbol/Proc that returns a String or an Array of
+  #               Strings that are to be exact matched
   #
   class Conversion
     class Error < ::ThinSearch::Error ; end
@@ -146,6 +148,7 @@ module ThinSearch
     attr_reader :facets_proc
     attr_reader :important_proc
     attr_reader :normal_proc
+    attr_reader :exact_proc
 
 
     # Internal: Create and initialize a Conversion
@@ -174,6 +177,10 @@ module ThinSearch
     #                        on an instance of :context to retrieve the
     #                        "normal" terms to index. Or a lambda that when given
     #                        an instance of :context it will return the same data
+    #           :exact     - a String/Symbol that is the name of a method to
+    #                        call on an instance of :context to retrieve the
+    #                        "exact" terms to index. Or a lambda that when given
+    #                        an instance of :context will return the same data
     #
     def initialize(options = {})
       options          = Map.new(options)
@@ -184,6 +191,7 @@ module ThinSearch
       @facets_proc     = define_extract_proc(:facets,    options.fetch(:facets, nil))
       @important_proc  = define_extract_proc(:important, options.fetch(:important, nil))
       @normal_proc     = define_extract_proc(:normal,    options.fetch(:normal, nil))
+      @exact_proc      = define_extract_proc(:exact,     options.fetch(:exact, nil))
     end
 
     def context_class
@@ -201,6 +209,7 @@ module ThinSearch
         doc.facets     = extract_facets(context_instance)
         doc.important  = extract_important(context_instance)
         doc.normal     = extract_normal(context_instance)
+        doc.exact      = extract_exact(context_instance)
       end
     end
 
@@ -244,16 +253,23 @@ module ThinSearch
 
     # Internal: returns the imortant data to index
     #
-    # Returns an probably and Array of Strings
+    # Returns an Array of Strings
     def extract_important(context_instance)
       important_proc.call(context_instance)
     end
 
     # Internal: returns the normal data to index
     #
-    # Returns an probably and Array of Strings
+    # Returns an Array of Strings
     def extract_normal(context_instance)
       normal_proc.call(context_instance)
+    end
+
+    # Internal: returns the exact data to index
+    #
+    # Returns an Array of Strings
+    def extract_exact(context_instance)
+      exact_proc.call(context_instance)
     end
 
     # Internal: Finds the instance of context_class that matches the Document

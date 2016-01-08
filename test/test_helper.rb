@@ -72,6 +72,7 @@ module ThinSearch
                            :department => ::Faker::Commerce.department }
         doc.important = [ ::Faker::Internet.free_email, ::Faker::Name.name ]
         doc.normal    = [ ::Faker::Hipster.paragraph ]
+        doc.exact     = [ ::Faker::Team.creature ]
       end
     end
   end
