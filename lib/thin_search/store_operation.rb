@@ -1,5 +1,8 @@
 require 'thin_search/document'
+require 'thin_search/query'
+
 require 'digest'
+
 module ThinSearch
   # Internal: common class for Store operations
   #
@@ -31,8 +34,9 @@ module ThinSearch
       [ thing ].flatten.compact.join(' ')
     end
 
-    def exactable_string( thing )
-      thing.split(/\s+/).map { |s| ::Digest::MD5.hexdigest(s) }.join(' ')
+    def make_query( thing )
+      return thing if thing.instance_of?(Query)
+      Query.new(thing)
     end
   end
 end

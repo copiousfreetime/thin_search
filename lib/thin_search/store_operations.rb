@@ -143,47 +143,6 @@ module ThinSearch
       end
     end
 
-    class StringSearch < StoreOperation
-      def sql
-        @sql = <<-SQL
-          SELECT *,rank,rowid
-            FROM #{search_table}
-           WHERE #{search_table} MATCH :match
-        ORDER BY rank
-        SQL
-      end
-
-      def call(db, query)
-        Array.new.tap do |documents|
-          db.execute(sql,query_to_sql_bindings(query)) do |row|
-            documents << document_from_row(row)
-          end
-        end
-      end
-
-      def query_to_sql_bindings(query)
-        { ":match" => "(#{query}) OR (#{exactable_string(query)})" }
-      end
-    end
-
-    class StringSearchCount < StoreOperation
-      def sql
-        @sql = <<-SQL
-          SELECT count(*)
-            FROM #{search_table}
-           WHERE #{search_table} MATCH :match
-        SQL
-      end
-
-      def call(db, query)
-        db.first_value_from(sql, query_to_sql_bindings(query))
-      end
-
-      def query_to_sql_bindings(query)
-        { ":match" => "(#{query}) OR (#{exactable_string(query)})" }
-      end
-    end
-
     class QuerySearchCount < StoreOperation
       def sql(query)
         parts = []
@@ -203,11 +162,14 @@ module ThinSearch
       end
 
       def call(db, query)
-        db.first_value_from(sql(query), query_to_sql_bindings(query))
+        query = make_query(query)
+        db.first_value_from(sql(query), query_expression_to_sql_bindings(query.expression))
       end
 
-      def query_to_sql_bindings(query)
-        { ":match" => "(#{query.expression}) OR (#{exactable_string(query.expression)})" }
+      def query_expression_to_sql_bindings(expression)
+        escaped_tokens = expression.tokens.map(&:double_quoted).join(' ')
+        md5_tokens     = expression.tokens.map(&:md5).join(' ')
+        { ":match" => "(#{escaped_tokens}) OR (#{md5_tokens})" }
       end
     end
 
@@ -237,15 +199,18 @@ module ThinSearch
       end
 
       def call(db, query)
+        query = make_query(query)
         Array.new.tap do |documents|
-          db.execute(sql(query), query_to_sql_bindings(query)) do |row|
+          db.execute(sql(query), query_expression_to_sql_bindings(query.expression)) do |row|
             documents << document_from_row(row)
           end
         end
       end
 
-      def query_to_sql_bindings(query)
-        { ":match" => "(#{query.expression}) OR (#{exactable_string(query.expression)})" }
+      def query_expression_to_sql_bindings(expression)
+        escaped_tokens = expression.tokens.map(&:double_quoted).join(' ')
+        md5_tokens     = expression.tokens.map(&:md5).join(' ')
+        { ":match" => "(#{escaped_tokens}) OR (#{md5_tokens})" }
       end
     end
 

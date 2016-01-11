@@ -1,4 +1,5 @@
 require 'map'
+require 'thin_search/query_expression'
 
 module ThinSearch
   # Public: Represents all the information in making a query to the index
@@ -28,7 +29,7 @@ module ThinSearch
     #                       against by default
     #
     def initialize(expression, opts = {})
-      @expression    = expression.to_s
+      @expression    = QueryExpression.new(expression)
 
       @result        = nil
       @page          = nil

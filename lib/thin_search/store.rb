@@ -47,30 +47,14 @@ module ThinSearch
     #
     # Returns Array of Documents
     def search_index(index_name, query)
-      search_op = case query
-                  when Query
-                    operations_for_index(index_name)[StoreOperations::QuerySearch]
-                  when String
-                    operations_for_index(index_name)[StoreOperations::StringSearch]
-                  else
-                    raise Error, "Unknown way to search #{query}"
-                  end
-      search_op.call(db, query)
+      operations_for_index(index_name)[StoreOperations::QuerySearch].call(db, query)
     end
 
     # Internal: return the count of documents that match
     #
     # Returns integer
     def count_search_index(index_name, query)
-      search_op = case query
-                  when Query
-                    operations_for_index(index_name)[StoreOperations::QuerySearchCount]
-                  when String
-                    operations_for_index(index_name)[StoreOperations::StringSearchCount]
-                  else
-                    raise Error, "Unknown way to count search #{query}"
-                  end
-      search_op.call(db, query)
+      operations_for_index(index_name)[StoreOperations::QuerySearchCount].call(db, query)
     end
 
     def find_one_document_in_index(index_name, document)
@@ -99,8 +83,6 @@ module ThinSearch
         StoreOperations::Insert        => StoreOperations::Insert.new(index_name),
         StoreOperations::BulkInsert    => StoreOperations::BulkInsert.new(index_name),
         StoreOperations::DocumentCount => StoreOperations::DocumentCount.new(index_name),
-        StoreOperations::StringSearch  => StoreOperations::StringSearch.new(index_name),
-        StoreOperations::StringSearchCount  => StoreOperations::StringSearchCount.new(index_name),
         StoreOperations::QuerySearch   => StoreOperations::QuerySearch.new(index_name),
         StoreOperations::QuerySearchCount  => StoreOperations::QuerySearchCount.new(index_name),
         StoreOperations::FindOne       => StoreOperations::FindOne.new(index_name),
