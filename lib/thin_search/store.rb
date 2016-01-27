@@ -5,14 +5,21 @@ require 'thin_search/store_operations'
 
 module ThinSearch
   class Store
-    attr_reader :db
     attr_reader :path
 
     def initialize(path)
       @path             = Pathname.new(path.to_s)
       @path.dirname.mkpath
-      @db               = ::Amalgalite::Database.new(path.to_s)
       @index_operations = Hash.new
+      @db = nil
+    end
+
+    def db
+      if @db && @db.open? then
+        @db
+      else
+        @db = ::Amalgalite::Database.new(path.to_s)
+      end
     end
 
     def create_index(index_name)
